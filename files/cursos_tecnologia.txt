@@ -1,0 +1,31 @@
+CURSOS DE TECNOLOGIA
+
+ENGENHARIA DE COMPUTAÇÃO
+- Duração: 5 anos
+- Instituições: USP, UNICAMP, UFMG, PUC-Rio
+- Foco: Hardware e software, sistemas embarcados
+- Mercado: Empresas de tecnologia, startups, indústria
+
+CIÊNCIA DA COMPUTAÇÃO
+- Duração: 4 anos
+- Instituições: USP, UNICAMP, UFMG, ITA
+- Foco: Algoritmos, programação, inteligência artificial
+- Mercado: Desenvolvimento de software, pesquisa, consultoria
+
+SISTEMAS DE INFORMAÇÃO
+- Duração: 4 anos
+- Instituições: USP, UNESP, UFSCar, PUC-SP
+- Foco: Gestão de sistemas, análise de dados
+- Mercado: Empresas de todos os setores, consultoria
+
+ANÁLISE E DESENVOLVIMENTO DE SISTEMAS
+- Duração: 2-3 anos (tecnólogo)
+- Instituições: Fatec, Senac, universidades privadas
+- Foco: Desenvolvimento prático de aplicações
+- Mercado: Desenvolvimento web, mobile, startups
+
+ENGENHARIA DE SOFTWARE
+- Duração: 4-5 anos
+- Instituições: USP, UNICAMP, UFMG, PUC-Rio
+- Foco: Metodologias de desenvolvimento, qualidade de software
+- Mercado: Empresas de tecnologia, consultoria, startups 

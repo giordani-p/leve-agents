@@ -1,0 +1,87 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# pyenv local version file
+.python-version
+
+# VSCode and IDE configs
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+logs/
+agentops.log
+
+# Environment variables
+.env
+.env.*
+
+# Pip metadata and wheels
+*.egg-info/
+*.egg
+*.whl
+dist/
+build/
+
+# Jupyter & IPython 
+.ipynb_checkpoints/
+*.ipynb
+
+# CrewAI RAG & cache
+crewai-rag/
+crewai-rag-tool.lock
+db/
+
+# AgentOps cache
+agentops.db
+agentops.sqlite
+
+# Outputs temporários
+outputs/
+output.txt
+tmp/
+temp/
+
+# Testes temporários
+test-results/
+coverage/
+htmlcov/
+
+# Node artifacts 
+node_modules/
+npm-debug.log
+pnpm-lock.yaml
+yarn.lock
+
+# GitHub-specific
+*.bak
+*.orig
+*.rej
+
+# VSCode hidden folders
+.history/
+
+# Arquivos temporários específicos do projeto
+*.tmp
+*.temp
