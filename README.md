@@ -67,13 +67,13 @@ estag-agent/
 ## Modelos Suportados
 
 ### Groq (Recomendado)
-- `mixtral-8x7b-32768` (padrão)
+- `mixtral-8x7b-32768` (Descontinuado)
 - `llama3-8b-8192`
 - `llama3-70b-8192`
 - `gemma-7b-it`
 - `llama2-70b-4096`
 
 ### OpenAI
-- `gpt-4o`
+- `gpt-4o` (padrão)
 - `gpt-3.5-turbo` 
 
