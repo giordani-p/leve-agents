@@ -1,6 +1,6 @@
 from crewai import Agent
-from models.llm import get_openai_llm
-#from models.llm import get_groq_llm, GroqModel
+#from models.llm import get_openai_llm
+from models.llm import get_groq_llm, GroqModel
 from crewai_tools import SerperDevTool, DirectorySearchTool
 
 # Inicializa ferramentas disponíveis para o agente
@@ -8,8 +8,8 @@ search_tool = SerperDevTool()  # ferramenta de busca na web (usa Google por trá
 file_tool = DirectorySearchTool(directory="files/")  # busca em arquivos locais da pasta `files`
 
 # Obtém o modelo de linguagem (LLM) para o agente Advisor
-llm = get_openai_llm(model="gpt-4o")
-#llm = get_groq_llm(model_name=GroqModel.GEMMA)
+#llm = get_openai_llm(model="gpt-4o")
+llm = get_groq_llm(model_name=GroqModel.GEMMA)
 
 # Define o agente responsável pela orientação educacional
 advisor_agent = Agent(

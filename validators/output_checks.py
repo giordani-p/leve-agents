@@ -131,9 +131,9 @@ def check_modality_against_preference(contract: OutputContract, preferencia: Opt
         return []
 
     pref = preferencia.lower()
-    wants_ead = "ead" in pref
-    wants_presencial = "presencial" in pref
-    wants_hibrido = "híbrido" in pref or "hibrido" in pref
+    wants_ead = "ead" in pref or "EAD" in pref
+    wants_presencial = "presencial" in pref or "Presencial" in pref
+    wants_hibrido = "híbrido" in pref or "Híbrido" in pref or "hibrido" in pref or "Hibrido" in pref
 
     if not any([wants_ead, wants_presencial, wants_hibrido]):
         return []  # Nada a checar sobre modalidade
