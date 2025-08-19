@@ -4,6 +4,7 @@ from agents.advisor_agent import advisor_agent
 
 advisor_task = Task(
     # Descrição clara (com espaços corretos) e mapeando para os campos do JSON
+    name="Recomendação de Cursos de Graduação",
     description=(
         "Com base em {interesse} e {preferencia}, encontre até 3 cursos de graduação no Brasil "
         "que mais se adequem ao perfil do usuário. Para cada curso, inclua: nome, instituição, "

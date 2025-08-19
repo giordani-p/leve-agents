@@ -6,7 +6,7 @@ from datetime import date
 from typing import Dict, List, Optional, Tuple
 
 from pydantic import ValidationError
-from schemas.output_contract import OutputContract, Modality, Option, Source
+from schemas.advisor_output import OutputAdvisor, Modality, Option, Source
 
 # Para checagem HTTP opcional (pode desabilitar em ambiente offline)
 try:
@@ -22,7 +22,7 @@ class ValidationResult:
     valid: bool
     errors: List[str]
     warnings: List[str]
-    normalized: Optional[OutputContract] = None
+    normalized: Optional[OutputAdvisor] = None
     url_status: Optional[Dict[str, int]] = None
 
 
@@ -30,14 +30,14 @@ class ValidationResult:
 # Normalização e parsing
 # ---------------------------
 
-def parse_and_normalize(raw_json: dict) -> Tuple[Optional[OutputContract], List[str]]:
+def parse_and_normalize(raw_json: dict) -> Tuple[Optional[OutputAdvisor], List[str]]:
     """
     Faz o parse do JSON no schema OutputContract e aplica normalizações leves.
     Retorna o objeto normalizado e uma lista de erros de schema (se houver).
     """
     errors: List[str] = []
     try:
-        contract = OutputContract.model_validate(raw_json)
+        contract = OutputAdvisor.model_validate(raw_json)
     except ValidationError as ve:
         errors.append(f"Schema inválido: {ve}")
         return None, errors
@@ -85,14 +85,14 @@ def parse_and_normalize(raw_json: dict) -> Tuple[Optional[OutputContract], List[
 # Regras de negócio
 # ---------------------------
 
-def check_unique_ranks(contract: OutputContract) -> List[str]:
+def check_unique_ranks(contract: OutputAdvisor) -> List[str]:
     """Garante que não há ranks duplicados em options."""
     ranks = [o.rank for o in contract.options]
     dups = {r for r in ranks if ranks.count(r) > 1}
     return [f"Ranks duplicados: {sorted(dups)}"] if dups else []
 
 
-def check_summary_quality(contract: OutputContract) -> List[str]:
+def check_summary_quality(contract: OutputAdvisor) -> List[str]:
     """
     Heurística simples para '2–3 linhas':
     - Contar quebras de linha e número de frases.
@@ -111,7 +111,7 @@ def check_summary_quality(contract: OutputContract) -> List[str]:
     return errors
 
 
-def check_next_steps_quality(contract: OutputContract) -> List[str]:
+def check_next_steps_quality(contract: OutputAdvisor) -> List[str]:
     """Valida quantidade e tamanho de cada passo."""
     errors: List[str] = []
     if not (2 <= len(contract.next_steps) <= 5):
@@ -122,7 +122,7 @@ def check_next_steps_quality(contract: OutputContract) -> List[str]:
     return errors
 
 
-def check_modality_against_preference(contract: OutputContract, preferencia: Optional[str]) -> List[str]:
+def check_modality_against_preference(contract: OutputAdvisor, preferencia: Optional[str]) -> List[str]:
     """
     Coerência mínima entre 'preferencia' do usuário e as opções retornadas.
     - Se preferencia mencionar EAD/presencial/híbrido, pelo menos uma opção deve atender.
@@ -152,7 +152,7 @@ def check_modality_against_preference(contract: OutputContract, preferencia: Opt
     ]
 
 
-def check_sources_basic(contract: OutputContract) -> List[str]:
+def check_sources_basic(contract: OutputAdvisor) -> List[str]:
     """Validações básicas de fontes: datas e quantidade."""
     errors: List[str] = []
     today = date.today()
@@ -176,7 +176,7 @@ def guess_institution_domain(name: str) -> Optional[str]:
     return None
 
 
-def check_official_urls(contract: OutputContract, http_check: bool = False, timeout: float = 4.0) -> Tuple[List[str], Dict[str, int]]:
+def check_official_urls(contract: OutputAdvisor, http_check: bool = False, timeout: float = 4.0) -> Tuple[List[str], Dict[str, int]]:
     """
     Checa se official_url e sources URLs são potencialmente válidas.
     - Validação de formato já ocorre pelo Pydantic.
@@ -209,7 +209,7 @@ def check_official_urls(contract: OutputContract, http_check: bool = False, time
     return errors, status_map
 
 
-def check_rank_coverage(contract: OutputContract) -> List[str]:
+def check_rank_coverage(contract: OutputAdvisor) -> List[str]:
     """
     Se houver mais de 1 opção, recomenda-se que os ranks sejam 1..N sem repetição.
     Não é obrigatório ser contínuo, mas avisamos se há gaps notáveis.
@@ -222,7 +222,7 @@ def check_rank_coverage(contract: OutputContract) -> List[str]:
     return warnings
 
 
-def check_required_fields_presence(contract: OutputContract) -> List[str]:
+def check_required_fields_presence(contract: OutputAdvisor) -> List[str]:
     """
     Confirma presença de campos textuais essenciais em cada opção.
     O schema já valida tipos/tamanhos básicos, aqui apenas garantimos semântica mínima.
