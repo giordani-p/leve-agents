@@ -5,15 +5,21 @@ CLI do Sistema de Recomendação (V1)
 - Executa o pipeline e imprime o resultado validado no terminal.
 - Por padrão imprime de forma "amigável"; use --json para ver o objeto completo.
 
+Fontes de dados:
+  --source api   → lê catálogo via endpoint /api/trails do backend da Leve
+  --source files → lê catálogo via arquivo local em files/trails/trails_examples.json
+
 Exemplos:
-  python -m cli.main_reco --user-question "Quero aprender programação do zero"
+  python -m cli.main_reco -q "Quero aprender programação do zero"
   python -m cli.main_reco -q "Como organizar meus estudos?" --json
+  python -m cli.main_reco -q "trilhas para iniciantes" --source api --api-base http://localhost:3000
 """
 
 from __future__ import annotations
 
 import argparse
 import sys
+from dataclasses import replace
 from typing import Optional
 
 from reco.config import RecoConfig
@@ -39,7 +45,7 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--trails-path",
         default="files/trails/trails_examples.json",
-        help="Caminho do JSON de trilhas (default: files/trails/trails_examples.json).",
+        help="Caminho do JSON de trilhas (default: files/trails/trails_examples.json). Ignorado quando --source=api.",
     )
     parser.add_argument(
         "--max-results",
@@ -57,6 +63,17 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
         "--contexto-extra",
         default=None,
         help="Contexto adicional livre (ex.: 'iniciante; JavaScript').",
+    )
+    parser.add_argument(
+        "--source",
+        choices=["api", "files"],
+        default="api",
+        help="Fonte do catálogo de trilhas: 'api' (padrão) ou 'files'.",
+    )
+    parser.add_argument(
+        "--api-base",
+        default=None,
+        help="Override da base URL do backend (ex.: http://localhost:3000). Útil com --source=api.",
     )
     parser.add_argument(
         "--json",
@@ -99,12 +116,16 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(f"[ERRO] Entrada inválida: {e}", file=sys.stderr)
         return 2
 
+    # Configuração com seleção de fonte e override opcional da base da API
+    cfg = RecoConfig(SOURCE=args.source)
+    if args.api_base:
+        cfg = replace(cfg, TRAILS_API_BASE=args.api_base)
+
     try:
-        cfg = RecoConfig()
         output = run_pipeline(
             user_input=user_input,
             snapshot_path=args.snapshot_path,
-            trails_path=args.trails_path,
+            trails_path=args.trails_path,  # ignorado quando SOURCE='api'
             cfg=cfg,
         )
     except Exception as e:
@@ -116,6 +137,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(output.model_dump_json(indent=2))
     else:
         _print_pretty(output)
+
+    return 0
 
 
 if __name__ == "__main__":

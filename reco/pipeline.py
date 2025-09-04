@@ -3,7 +3,7 @@
 Pipeline ponta a ponta do Sistema de Recomendação (CLI).
 
 Fluxo:
-1) Carrega snapshot e catálogo (JSON em 'files/').
+1) Carrega snapshot (sempre via arquivo) e catálogo (via API ou arquivos, conforme config.SOURCE).
 2) Normaliza trilhas em TrailCandidate, deduplica e filtra por status permitido (Published).
 3) Monta a consulta a partir da user_question (+ pistas opcionais do snapshot/contexto).
 4) Calcula similaridade por conteúdo (TF-IDF + cosseno).
@@ -17,7 +17,8 @@ from __future__ import annotations
 from typing import Dict, List, Optional
 
 from reco.config import RecoConfig
-from reco.data_loader import load_snapshot, load_trails
+from reco.data_loader import load_snapshot, load_trails as load_trails_file
+from reco.data_loader_api import fetch_trails as fetch_trails_api
 from reco.normalizer import to_candidates, dedupe_by_public_id, filter_by_status
 from reco.query_builder import build as build_query
 from reco.indexer import score as index_scores
@@ -61,13 +62,20 @@ def run(
       - user_input: TrailInput (user_question obrigatório; max_results ≤ 3).
       - snapshot_path: caminho para o JSON de snapshot (ex.: files/snapshots/carlos_001.json).
       - trails_path: caminho para o JSON de trilhas (ex.: files/trails/trails_examples.json).
+        *Observação*: quando SOURCE='api', este parâmetro é ignorado.
       - cfg: RecoConfig (opcional; usa padrão se não fornecido).
     """
     cfg = cfg or RecoConfig()
 
     # 1) Carregar dados
     snapshot = load_snapshot(snapshot_path)
-    raw_trails = load_trails(trails_path)
+
+    if cfg.SOURCE == "api":
+        # Catálogo via API (httpx, timeout/retry definidos em config)
+        raw_trails = fetch_trails_api(cfg)
+    else:
+        # Catálogo via arquivos (mock local)
+        raw_trails = load_trails_file(trails_path)
 
     # 2) Normalizar, deduplicar e filtrar Published
     candidates_all = to_candidates(raw_trails)

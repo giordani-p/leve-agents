@@ -4,9 +4,10 @@ Parâmetros centrais do Sistema de Recomendação (CLI).
 
 Novidades desta revisão:
 - Similaridade acento-insensível: adiciona strip_accents para o TF-IDF.
-- Peso do boost por título/descrição elevado (TITLE_DESC_BOOST=0.25).
+- Peso do boost por título/descrição elevado (TITLE_DESC_BOOST=0.15).
 - Parâmetros explícitos para fallback de dominância (DOMINANCE_MIN_ACCEPT).
 - Mini dicionário de sinônimos para expandir a consulta (opcional).
+- **Integração via API**: base URL, timeouts, retries e seleção de fonte (api|files).
 
 Observações:
 - Filtro rígido por status 'Published' (ver ALLOWED_STATUS).
@@ -16,7 +17,13 @@ Observações:
 """
 
 from dataclasses import dataclass
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Literal
+
+
+# -----------------------------
+# Fonte de dados
+# -----------------------------
+DataSource = Literal["api", "files"]
 
 
 @dataclass(frozen=True)
@@ -29,7 +36,7 @@ class RecoConfig:
     TAG_BOOST: float = 0.10                # bônus quando há match claro de tags/tema
     BEGINNER_BOOST: float = 0.05           # bônus leve para trilhas Beginner (fase de descoberta)
     TITLE_DESC_BOOST: float = 0.15         # bônus quando keyword aparece no título/descrição/conteúdo
-    SCORE_CAP: float = 0.96                 # teto para evitar score > 1.0 após boosts
+    SCORE_CAP: float = 0.96                # teto para evitar score > 1.0 após boosts
     DOMINANCE_MIN_ACCEPT: float = 0.55     # fallback: aceita top-1 se ninguém passar do threshold, mas top ≥ este valor
 
     # Filtro de status (apenas Published nesta fase)
@@ -64,6 +71,27 @@ class RecoConfig:
     NORMALIZE_MAX: float = 1.0
     RANDOM_SEED: int = 42                         # reprodutibilidade em empates/ordenação estável
 
+    # -----------------------------
+    # Integração via API (httpx)
+    # -----------------------------
+    SOURCE: DataSource = "api"                    # "api" | "files"
+    TRAILS_API_BASE: str = "http://localhost:3000"  # base do backend Leve
+    API_FILTER_PUBLISHED: bool = True             # se True, incluir ?status=Published em /api/trails
+
+    # Timeouts (segundos). httpx permite granularidade: connect/read/write/pool.
+    HTTP_TIMEOUT_CONNECT: float = 3.0
+    HTTP_TIMEOUT_READ: float = 7.0
+    HTTP_TIMEOUT_WRITE: float = 3.0
+    HTTP_TIMEOUT_POOL: float = 3.0
+
+    # Retries com backoff simples (exponencial): attempts = 1 + HTTP_RETRIES
+    HTTP_RETRIES: int = 2                         # tentativas adicionais em falhas transitórias
+    HTTP_BACKOFF_BASE: float = 0.4                # base (segundos) para backoff exponencial (0.4, 0.8, 1.6, ...)
+
+    # Limites de paginação (se o endpoint paginar no futuro)
+    API_MAX_PAGES: int = 10
+    API_PAGE_SIZE_HINT: int | None = None         # se houver suporte a page size
+
     # Hack simples para permitir default mutável de QUERY_SYNONYMS em dataclass frozen
     def __post_init__(self):
         if object.__getattribute__(self, "QUERY_SYNONYMS") is None:
@@ -78,11 +106,11 @@ class RecoConfig:
                 "dados": ["data", "csv", "planilha", "planilhas", "analise"],
                 "excel": ["planilha", "planilhas", "spreadsheet", "xls", "xlsx"],
                 "python": ["py", "python", "pythonico", "pythonista"],
-                "ia": ["inteligencia artificial", "inteligencia artificialia", "inteligencia artificialia"],
-                "ux": ["user experience", "user experience design", "user experience designer", "user experience designe", "user experience designer"],
-                "ui": ["user interface", "user interface design", "user interface designer", "user interface designe", "user interface designer"],
-                "direito": ["juridico", "juridica", "juridico", "juridica"],
-                "saude": ["saude", "saude mental", "saude mental", "saude mental"],
-                "nutricao": ["nutricao", "nutricao", "nutricao", "nutricao"],
+                "ia": ["inteligencia artificial"],
+                "ux": ["user experience", "user experience design", "ux design"],
+                "ui": ["user interface", "user interface design", "ui design"],
+                "direito": ["juridico", "juridica"],
+                "saude": ["saude", "saude mental"],
+                "nutricao": ["nutricao"],
             }
             object.__setattr__(self, "QUERY_SYNONYMS", base)
