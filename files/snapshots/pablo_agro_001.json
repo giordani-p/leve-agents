@@ -1,0 +1,24 @@
+{
+  "macroperfil": "O jovem busca desenvolvimento prático para melhorar seu trabalho atual, com foco em soluções simples e aplicáveis.",
+  "caracteristicas_chave": ["Pragmático", "Trabalhador", "Resiliente"],
+  "objetivos_detectados": [
+    "Aprender programação do zero",
+    "Automatizar tarefas do trabalho",
+    "Organizar planilhas de dados"
+  ],
+  "dificuldades_detectadas": ["Internet instável em casa", "Computador compartilhado"],
+  "hipoteses_a_validar": [
+    "Prefere atividades curtas e práticas",
+    "Aprendizagem voltada a resultados imediatos"
+  ],
+  "recomendacoes": [
+    "Começar por Python básico e scripts simples",
+    "Usar planilhas e fórmulas do Excel para controle",
+    "Aplicar exemplos do dia a dia do campo"
+  ],
+  "next_questions": [
+    "Quais tarefas você mais repete no trabalho?",
+    "Você já usa planilhas para organizar dados do dia?"
+  ],
+  "alerts_politicas": ["não informado"]
+}

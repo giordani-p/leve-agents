@@ -1,0 +1,23 @@
+{
+  "macroperfil": "A jovem deseja iniciar um projeto social no bairro e precisa de organização e visão prática para tirá-lo do papel.",
+  "caracteristicas_chave": ["Empática", "Engajada", "Colaborativa"],
+  "objetivos_detectados": [
+    "Planejar e iniciar um projeto social",
+    "Organizar finanças pessoais para viabilizar o projeto"
+  ],
+  "dificuldades_detectadas": ["Orçamento baixo", "Disponibilidade limitada (fins de semana)"],
+  "hipoteses_a_validar": [
+    "Prefere guias práticos com passos claros",
+    "Precisa de materiais simples para mobilizar voluntários"
+  ],
+  "recomendacoes": [
+    "Aplicar princípios de empreendedorismo enxuto ao projeto social",
+    "Montar orçamento pessoal simples e metas",
+    "Definir objetivos e indicadores de impacto do projeto"
+  ],
+  "next_questions": [
+    "Qual problema local você quer atacar primeiro?",
+    "Quem poderia ser seu primeiro parceiro ou voluntário?"
+  ],
+  "alerts_politicas": ["não informado"]
+}

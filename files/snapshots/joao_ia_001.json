@@ -1,0 +1,25 @@
+{
+  "macroperfil": "Estudante curioso sobre IA e interessado em usar ferramentas com responsabilidade nos estudos.",
+  "caracteristicas_chave": ["Questionador", "Cauteloso", "Autônomo"],
+  "objetivos_detectados": [
+    "Aprender a usar IA nos estudos com boas práticas",
+    "Entender limites e ética"
+  ],
+  "dificuldades_detectadas": [
+    "Sem acesso a ferramentas pagas",
+    "Incerteza sobre o que é permitido usar"
+  ],
+  "hipoteses_a_validar": [
+    "Prefere checklists e orientações objetivas",
+    "Quer exemplos práticos de uso responsável"
+  ],
+  "recomendacoes": [
+    "Começar com noções básicas de IA no cotidiano",
+    "Seguir checklist de uso responsável e checagem de fontes"
+  ],
+  "next_questions": [
+    "Para quais matérias você quer usar IA primeiro?",
+    "Você já tem regras da escola sobre o uso de IA?"
+  ],
+  "alerts_politicas": ["não informado"]
+}

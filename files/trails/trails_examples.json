@@ -1,0 +1,825 @@
+[
+  {
+    "publicId": "2d77b3b8-6c9e-4b6a-8a7c-2c6b1a3b4e11",
+    "slug": "fundamentos-de-programacao",
+    "title": "Fundamentos de Programação",
+    "subtitle": "Comece do zero e aprenda a pensar como programador",
+    "description": "Trilha introdutória para quem deseja dar os primeiros passos em lógica, variáveis, condições e funções, com exercícios práticos curtos.",
+    "difficulty": "Beginner",
+    "tags": ["Lógica", "Algoritmos", "JavaScript", "Iniciante"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "f4a6b1a0-2f4e-4f37-8d2c-3ad3b8c1e001",
+        "title": "Módulo 1 — Lógica e Variáveis",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "a9f0b6c3-1e2d-4a5b-8c0f-9b2a7c6d3001",
+            "title": "Lição 1 — Pensamento lógico",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "conteudo": "Introdução à lógica, exemplos simples e exercícios guiados."
+            }
+          },
+          {
+            "publicId": "a9f0b6c3-1e2d-4a5b-8c0f-9b2a7c6d3002",
+            "title": "Lição 2 — Variáveis e Tipos",
+            "order": 2,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "exercicios": ["Criar variáveis", "Converter tipos", "Imprimir resultados"]
+            }
+          }
+        ]
+      },
+      {
+        "publicId": "f4a6b1a0-2f4e-4f37-8d2c-3ad3b8c1e002",
+        "title": "Módulo 2 — Condições e Funções",
+        "order": 2,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "a9f0b6c3-1e2d-4a5b-8c0f-9b2a7c6d3003",
+            "title": "Lição 1 — If/Else na prática",
+            "order": 1,
+            "lessonKind": "video",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "videoUrl": "https://example.com/if-else",
+              "dicas": ["Pense em cenários do dia a dia", "Teste variações"]
+            }
+          },
+          {
+            "publicId": "a9f0b6c3-1e2d-4a5b-8c0f-9b2a7c6d3004",
+            "title": "Lição 2 — Funções",
+            "order": 2,
+            "lessonKind": "quiz",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "perguntas": [
+                {"q": "O que é uma função?", "a": ["Definição", "Exemplo simples"]}
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "7c1d5c61-0b0a-4d06-9b66-f6a1c0d2b9a2",
+    "slug": "soft-skills-essenciais",
+    "title": "Soft Skills Essenciais",
+    "subtitle": "Comunicação, colaboração e organização para o dia a dia",
+    "description": "Trilha voltada a habilidades comportamentais fundamentais para estudar e trabalhar em equipe, com atividades curtas e práticas.",
+    "difficulty": "Beginner",
+    "tags": ["Comunicação", "Trabalho em equipe", "Organização", "Produtividade"],
+    "status": "Draft",
+    "Modules": [
+      {
+        "publicId": "1b2f0f84-4ae6-4b7c-9c52-251b7b99a111",
+        "title": "Módulo 1 — Comunicação na prática",
+        "order": 1,
+        "contentStatus": "Draft",
+        "Lessons": [
+          {
+            "publicId": "5c2f3b3d-ec6b-4e8f-9a75-8a1a3b5e2001",
+            "title": "Lição 1 — Comunicação clara e objetiva",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Planned",
+            "lockReason": null,
+            "contentStatus": "Draft",
+            "data": {
+              "conteudo": "Estratégias para evitar ruídos e ser direto."
+            }
+          },
+          {
+            "publicId": "5c2f3b3d-ec6b-4e8f-9a75-8a1a3b5e2002",
+            "title": "Lição 2 — Feedback construtivo",
+            "order": 2,
+            "lessonKind": "practice",
+            "lessonStatus": "Planned",
+            "lockReason": null,
+            "contentStatus": "Draft",
+            "data": {
+              "atividade": "Roteiro simples para dar e receber feedback."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "e0f3b0da-5f8d-4c47-a5a5-7e2c4c0a5d33",
+    "slug": "primeiro-emprego",
+    "title": "Primeiro Emprego",
+    "subtitle": "Do currículo à entrevista: passos práticos para sua primeira vaga",
+    "description": "Focada na busca pelo primeiro emprego: currículo simples e direto, onde procurar vagas, como se preparar para entrevistas e como se organizar nas primeiras semanas.",
+    "difficulty": "Beginner",
+    "tags": ["Carreira", "Currículo", "Entrevista", "Empregabilidade", "Jovem Aprendiz"],
+    "status": "Archived",
+    "Modules": [
+      {
+        "publicId": "9a5f7d8c-1a3b-4b7e-9c15-0f2a6b7c3e01",
+        "title": "Módulo 1 — Currículo e Portfólio",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "cc8b4e5a-3a12-4b6e-a9a0-7b1f2e3c4001",
+            "title": "Lição 1 — Montando um currículo objetivo",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "templateUrl": "https://example.com/template-curriculo.pdf"
+            }
+          },
+          {
+            "publicId": "cc8b4e5a-3a12-4b6e-a9a0-7b1f2e3c4002",
+            "title": "Lição 2 — Portfólio simples com projetos",
+            "order": 2,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "passos": ["Escolha 2 projetos", "Publique no GitHub", "Link no currículo"]
+            }
+          }
+        ]
+      },
+      {
+        "publicId": "9a5f7d8c-1a3b-4b7e-9c15-0f2a6b7c3e02",
+        "title": "Módulo 2 — Entrevistas sem mistério",
+        "order": 2,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "cc8b4e5a-3a12-4b6e-a9a0-7b1f2e3c4003",
+            "title": "Lição 1 — Método STAR na prática",
+            "order": 1,
+            "lessonKind": "video",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "videoUrl": "https://example.com/entrevista-star"
+            }
+          },
+          {
+            "publicId": "cc8b4e5a-3a12-4b6e-a9a0-7b1f2e3c4004",
+            "title": "Lição 2 — Checklist pré-entrevista",
+            "order": 2,
+            "lessonKind": "quiz",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {
+              "perguntas": [
+                {"q": "Pesquisou a empresa?", "a": ["Sim", "Não"]},
+                {"q": "Revisou o currículo?", "a": ["Sim", "Não"]}
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "publicId": "1f4c2f3b-9d1a-4e7a-9a60-0b3e28f5a101",
+    "slug": "introducao-ao-python",
+    "title": "Introdução ao Python",
+    "subtitle": "Primeiros passos com sintaxe, listas e funções",
+    "description": "Aprenda a base de Python para automatizar tarefas simples e resolver problemas do dia a dia.",
+    "difficulty": "Beginner",
+    "tags": ["Python", "Lógica", "Iniciante", "Scripts"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "af2a7c53-6d2b-4f2b-8e2e-4c1a9b7d1001",
+        "title": "Sintaxe e Variáveis",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "b3f7c2d1-1e5a-47b9-9f3f-2e4a6c8d1001",
+            "title": "Hello, Python!",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Impressão, tipos, comentários."}
+          }
+        ]
+      },
+      {
+        "publicId": "af2a7c53-6d2b-4f2b-8e2e-4c1a9b7d1002",
+        "title": "Listas e Funções",
+        "order": 2,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "b3f7c2d1-1e5a-47b9-9f3f-2e4a6c8d1002",
+            "title": "Funções na prática",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["Soma de lista", "Filtro de ímpares"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "2a0d7e4f-51a0-4c2f-9f7c-6afc8e3a2101",
+    "slug": "pensamento-computacional",
+    "title": "Pensamento Computacional no Dia a Dia",
+    "subtitle": "Decomposição, padrões e algoritmos em problemas reais",
+    "description": "Use lógica e abstração para resolver problemas do cotidiano com mais clareza e método.",
+    "difficulty": "Beginner",
+    "tags": ["Lógica", "Decomposição", "Padrões", "Algoritmos"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "6b4c2d1e-8a7f-4a0f-9b1c-7d2e3f4a2001",
+        "title": "Decomposição de problemas",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "6c7d1e2f-3a4b-5c6d-7e8f-9a0b1c2d2001",
+            "title": "Passo a passo",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Quebre o problema em partes menores."}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "3b7e9f2a-4c1d-45a0-8b2f-6c1e2d3f3101",
+    "slug": "excel-basico",
+    "title": "Excel Básico para Estudos e Trabalho",
+    "subtitle": "Planilhas, fórmulas e organização",
+    "description": "Comece com o essencial para criar planilhas úteis, aplicar fórmulas e formatar dados.",
+    "difficulty": "Beginner",
+    "tags": ["Excel", "Planilhas", "Fórmulas", "Produtividade"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "4c1d5e7f-8a2b-4b3c-9d1e-6f7a8b9c3001",
+        "title": "Fórmulas essenciais",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "5e7f8a2b-3c4d-5b6a-7e8f-9a0b1c2d3001",
+            "title": "Soma e Média",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["SOMA", "MÉDIA", "MIN e MAX"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "4c2d1e3f-5a6b-7c8d-9e0f-1a2b3c4d4101",
+    "slug": "financas-pessoais-jovens",
+    "title": "Finanças Pessoais para Jovens",
+    "subtitle": "Orçamento simples, metas e juros na prática",
+    "description": "Aprenda a organizar o dinheiro, montar um orçamento básico e evitar armadilhas do cartão.",
+    "difficulty": "Beginner",
+    "tags": ["Orçamento", "Poupança", "Metas", "Cartão"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b4001",
+        "title": "Orçamento e metas",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d4001",
+            "title": "Planilha de gastos",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Modelo simples de orçamento mensal."}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "5d6e7f8a-9b0c-1d2e-3f4a-5b6c7d8e5101",
+    "slug": "comunicacao-profissional",
+    "title": "Comunicação Profissional",
+    "subtitle": "E-mails objetivos, apresentações e feedback",
+    "description": "Melhore sua comunicação escrita e falada com técnicas simples e aplicáveis.",
+    "difficulty": "Beginner",
+    "tags": ["Comunicação", "Apresentação", "Escrita", "Feedback"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "9b0c1d2e-3f4a-5b6c-7d8e-9f0a1b2c5001",
+        "title": "E-mails e apresentações",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "1d2e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5001",
+            "title": "E-mail com propósito",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Estrutura, tom e chamada para ação."}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "6e7f8a9b-0c1d-2e3f-4a5b-6c7d8e9f6101",
+    "slug": "introducao-ux-ui",
+    "title": "Introdução a UX/UI",
+    "subtitle": "Conceitos, usabilidade e protótipo clicável",
+    "description": "Entenda princípios de experiência do usuário e crie um protótipo simples no Figma.",
+    "difficulty": "Beginner",
+    "tags": ["UX", "UI", "Protótipo", "Figma"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "0c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d6001",
+        "title": "Usabilidade na prática",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "2e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6001",
+            "title": "Heurísticas básicas",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Visibilidade do status, consistência, prevenção de erros."}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "7f8a9b0c-1d2e-3f4a-5b6c-7d8e9f0a7101",
+    "slug": "seguranca-digital-essencial",
+    "title": "Segurança Digital Essencial",
+    "subtitle": "Hábitos mínimos para navegar com segurança",
+    "description": "Aprenda a criar senhas fortes, evitar phishing e ativar 2FA.",
+    "difficulty": "Beginner",
+    "tags": ["Senhas", "Phishing", "Privacidade", "2FA"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "1d2e3f4a-5b6c-7d8e-9f0a-1b2c3d4e7001",
+        "title": "Boas práticas",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7001",
+            "title": "Checklist de segurança",
+            "order": 1,
+            "lessonKind": "quiz",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"perguntas": [{"q": "Senha única por serviço?", "a": ["Sim", "Não"]}]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b8101",
+    "slug": "carreira-em-tecnologia",
+    "title": "Carreira em Tecnologia: Mapa de Áreas",
+    "subtitle": "Frontend, Backend, Dados e QA — por onde começar",
+    "description": "Panorama de áreas da tecnologia, atividades típicas e primeiros passos.",
+    "difficulty": "Beginner",
+    "tags": ["Carreira", "Tecnologia", "Frontend", "Backend", "Dados", "QA"],
+    "status": "Draft",
+    "Modules": [
+      {
+        "publicId": "2e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f8001",
+        "title": "Panorama de áreas",
+        "order": 1,
+        "contentStatus": "Draft",
+        "Lessons": [
+          {
+            "publicId": "4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8001",
+            "title": "O que faz cada área",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Planned",
+            "lockReason": null,
+            "contentStatus": "Draft",
+            "data": {"conteudo": "Resumo rápido das funções e ferramentas comuns."}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "9b0c1d2e-3f4a-5b6c-7d8e-9f0a1b2c9101",
+    "slug": "empreendedorismo-enxuto",
+    "title": "Empreendedorismo Enxuto",
+    "subtitle": "Do problema à solução com MVP",
+    "description": "Aprenda a validar hipóteses rápido, com foco em entregar valor.",
+    "difficulty": "Beginner",
+    "tags": ["MVP", "Problema-Solução", "Pitch", "Métricas"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a9001",
+        "title": "Problema e hipóteses",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "5b6c7d8e-9f0a-1b2c-3d4e-5f6a7b8c9001",
+            "title": "Canvas rápido",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["Defina problema", "Liste hipóteses", "Defina MVP mínimo"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "0c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d0102",
+    "slug": "projeto-social-na-pratica",
+    "title": "Projeto Social na Prática",
+    "subtitle": "Do planejamento ao impacto na comunidade",
+    "description": "Monte um projeto social simples e defina indicadores de impacto.",
+    "difficulty": "Beginner",
+    "tags": ["Impacto", "Comunidade", "Planejamento", "Voluntariado"],
+    "status": "Archived",
+    "Modules": [
+      {
+        "publicId": "4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b0101",
+        "title": "Planejamento básico",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "6c7d8e9f-0a1b-2c3d-4e5f-6a7b8c9d0101",
+            "title": "Objetivos e indicadores",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Defina objetivos SMART e métricas simples."}
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "publicId": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b1101",
+    "slug": "algoritmos-avancados",
+    "title": "Algoritmos Avançados",
+    "subtitle": "Estruturas e análises para ir além do básico",
+    "description": "Ordenação, busca, complexidade e estruturas de dados — nível intermediário.",
+    "difficulty": "Intermediate",
+    "tags": ["Algoritmos", "Estruturas de Dados", "Complexidade"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f1101",
+        "title": "Complexidade e estruturas",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1101",
+            "title": "Big-O e listas ligadas",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Revisão de O(n), O(log n) e exemplos práticos."}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c1201",
+    "slug": "ingles-para-entrevistas",
+    "title": "Inglês para Entrevistas",
+    "subtitle": "Vocabulário e respostas curtas para vagas",
+    "description": "Aprenda frases úteis, estrutura de respostas e treino rápido para entrevistas em inglês.",
+    "difficulty": "Beginner",
+    "tags": ["Inglês", "Entrevista", "Carreira"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a1201",
+        "title": "Perguntas comuns",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c1201",
+            "title": "Tell me about yourself",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["Resposta de 45s", "Palavras-chave da vaga"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d1301",
+    "slug": "ia-no-cotidiano",
+    "title": "Inteligência Artificial no Cotidiano",
+    "subtitle": "Ferramentas e limites para usar com responsabilidade",
+    "description": "Conheça exemplos práticos de IA, bons usos e riscos para iniciantes.",
+    "difficulty": "Beginner",
+    "tags": ["IA", "Produtividade", "Ferramentas", "Ética"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1301",
+        "title": "IA na prática",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d1301",
+            "title": "Checklist de uso responsável",
+            "order": 1,
+            "lessonKind": "quiz",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"perguntas": [{"q": "Conferiu a fonte?", "a": ["Sim", "Não"]}]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e1401",
+    "slug": "matematica-enem",
+    "title": "Matemática para o ENEM",
+    "subtitle": "Resumo dos temas mais frequentes",
+    "description": "Revisão objetiva dos tópicos com exercícios comentados para o ENEM.",
+    "difficulty": "Beginner",
+    "tags": ["Matemática", "ENEM", "Exercícios"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c1401",
+        "title": "Temas-chave",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e1401",
+            "title": "Porcentagem e regra de três",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["Lista 1 — porcentagem", "Lista 2 — regra de três"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f1501",
+    "slug": "fotografia-com-celular",
+    "title": "Fotografia com Celular",
+    "subtitle": "Composição e luz para fotos melhores",
+    "description": "Aprenda técnicas simples para tirar fotos mais bonitas usando apenas o celular.",
+    "difficulty": "Beginner",
+    "tags": ["Fotografia", "Celular", "Composição", "Luz"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d1501",
+        "title": "Composição e luz",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f1501",
+            "title": "Regra dos terços",
+            "order": 1,
+            "lessonKind": "video",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"videoUrl": "https://example.com/regra-tercos"}
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "publicId": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a1601",
+    "slug": "logica-de-programacao-com-js",
+    "title": "Lógica de Programação com JS",
+    "subtitle": "Pensamento lógico usando JavaScript no navegador",
+    "description": "Exercícios curtos de lógica e algoritmos rodando no console do navegador.",
+    "difficulty": "Beginner",
+    "tags": ["Lógica", "Algoritmos", "JavaScript", "Console"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e1601",
+        "title": "Algoritmos básicos",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a1601",
+            "title": "Laços e condições",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["for", "while", "if-else"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1701",
+    "slug": "git-e-github-para-iniciantes",
+    "title": "Git e GitHub para Iniciantes",
+    "subtitle": "Controle de versão na prática",
+    "description": "Conceitos essenciais de Git, commits, branches e pull requests usando um repositório simples.",
+    "difficulty": "Beginner",
+    "tags": ["Git", "GitHub", "Versão", "Projeto"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f1701",
+        "title": "Fluxo básico de Git",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b1701",
+            "title": "Commit, push e PR",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"conteudo": "Passo a passo do fluxo mais comum."}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c1801",
+    "slug": "introducao-a-dados",
+    "title": "Introdução a Dados",
+    "subtitle": "Coleta, limpeza e primeiros gráficos",
+    "description": "Entenda o básico de dados e gere seus primeiros gráficos com ferramentas simples.",
+    "difficulty": "Beginner",
+    "tags": ["Dados", "CSV", "Gráficos", "Análise"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a1801",
+        "title": "Do CSV ao gráfico",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c1801",
+            "title": "Limpeza e visualização",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["Limpe colunas", "Gere um gráfico de barras"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d1901",
+    "slug": "comunicacao-para-apresentacoes",
+    "title": "Comunicação para Apresentações",
+    "subtitle": "Estrutura, storytelling e slides",
+    "description": "Técnicas para montar apresentações curtas e claras com foco no público.",
+    "difficulty": "Beginner",
+    "tags": ["Comunicação", "Apresentação", "Storytelling", "Slides"],
+    "status": "Published",
+    "Modules": [
+      {
+        "publicId": "3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b1901",
+        "title": "Estrutura e narrativa",
+        "order": 1,
+        "contentStatus": "Ready",
+        "Lessons": [
+          {
+            "publicId": "5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d1901",
+            "title": "Pitch de 3 minutos",
+            "order": 1,
+            "lessonKind": "practice",
+            "lessonStatus": "Available",
+            "lockReason": null,
+            "contentStatus": "Ready",
+            "data": {"exercicios": ["Estruture abertura, meio e fim", "Treine com tempo"]}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "publicId": "0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e2001",
+    "slug": "introducao-a-redes",
+    "title": "Introdução a Redes",
+    "subtitle": "Conceitos básicos de internet e protocolos",
+    "description": "Entenda IP, DNS, HTTP e como a internet funciona por baixo dos panos.",
+    "difficulty": "Beginner",
+    "tags": ["Redes", "Internet", "HTTP", "DNS"],
+    "status": "Draft",
+    "Modules": [
+      {
+        "publicId": "4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c2001",
+        "title": "Conceitos fundamentais",
+        "order": 1,
+        "contentStatus": "Draft",
+        "Lessons": [
+          {
+            "publicId": "6d7e8f9a-0b1c-2d3e-4f5a-6b7c8d9e2001",
+            "title": "O caminho do pacote",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Planned",
+            "lockReason": null,
+            "contentStatus": "Draft",
+            "data": {"conteudo": "Como um pedido HTTP viaja pela rede."}
+          }
+        ]
+      }
+    ]
+  }
+]

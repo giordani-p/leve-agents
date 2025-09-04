@@ -1,0 +1,22 @@
+{
+  "macroperfil": "A jovem está em fase de descoberta profissional e busca clareza sobre áreas de interesse para decidir próximos passos.",
+  "caracteristicas_chave": ["Curiosa", "Comunicativa", "Colaborativa"],
+  "objetivos_detectados": [
+    "Explorar possíveis áreas de carreira",
+    "Melhorar apresentações e trabalhos na escola"
+  ],
+  "dificuldades_detectadas": ["Insegurança sobre o futuro", "Tempo curto para estudar"],
+  "hipoteses_a_validar": [
+    "Prefere conteúdos curtos e introdutórios",
+    "Precisa de orientação ampla antes de se aprofundar"
+  ],
+  "recomendacoes": [
+    "Começar por pensamento computacional para estruturar problemas",
+    "Praticar comunicação profissional para apresentações"
+  ],
+  "next_questions": [
+    "Quais matérias você mais gosta hoje?",
+    "Você se imagina trabalhando mais com pessoas ou com tecnologia?"
+  ],
+  "alerts_politicas": ["não informado"]
+}

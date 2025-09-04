@@ -1,0 +1,27 @@
+{
+  "macroperfil": "O jovem busca inserção rápida no mercado de trabalho e melhorias práticas no currículo e na comunicação.",
+  "caracteristicas_chave": ["Persistente", "Objetivo", "Prático"],
+  "objetivos_detectados": [
+    "Conseguir a primeira vaga formal",
+    "Melhorar o currículo e montar portfólio simples",
+    "Treinar para entrevistas"
+  ],
+  "dificuldades_detectadas": [
+    "Acesso limitado à internet",
+    "Necessidade de resultado em curto prazo"
+  ],
+  "hipoteses_a_validar": [
+    "Prefere atividades diretas e aplicáveis",
+    "Valoriza checklists e templates prontos"
+  ],
+  "recomendacoes": [
+    "Revisar currículo com modelo simples e objetivo",
+    "Praticar respostas de entrevista (método STAR)",
+    "Treinar comunicação profissional em e-mails"
+  ],
+  "next_questions": [
+    "Qual vaga você pretende buscar primeiro?",
+    "Você já tem um perfil no LinkedIn ou portfólio com 1–2 projetos?"
+  ],
+  "alerts_politicas": ["não informado"]
+}

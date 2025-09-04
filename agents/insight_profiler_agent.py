@@ -1,12 +1,12 @@
 from crewai import Agent
-#from models.llm import get_openai_llm
-from models.llm import get_groq_llm, GroqModel
+from models.llm import get_openai_llm
+#from models.llm import get_groq_llm, GroqModel
 from crewai_tools import DirectorySearchTool
 
 file_tool = DirectorySearchTool(directory="files/snapshots/") 
 
-llm = get_groq_llm(model_name=GroqModel.GEMMA)
-#llm = get_openai_llm(model="gpt-4o")
+#llm = get_groq_llm(model_name=GroqModel.GEMMA)
+llm = get_openai_llm(model="gpt-4o")
 
 insight_profiler_agent = Agent(
     name="Perfilador Educacional",

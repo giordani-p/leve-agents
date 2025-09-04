@@ -9,6 +9,10 @@ from tasks.advisor_task import advisor_task
 from agents.insight_profiler_agent import insight_profiler_agent
 from tasks.insight_profiler_task import insight_profiler_task
 
+# Agent 02 - Orientador de Trilhas
+# from agents.trail_guide_agent import trail_guide_agent
+# from tasks.trail_guide_task import trail_guide_task
+
 # Instância separada para cada crew
 advisor_crew = Crew(
     agents=[advisor_agent],
@@ -22,5 +26,11 @@ insight_profiler_crew = Crew(
     verbose=True
 )
 
-# Exporta as duas crews
-__all__ = ["advisor_crew", "insight_profiler_crew"]
+# trail_guide_crew = Crew(
+#     agents=[trail_guide_agent],
+#     tasks=[trail_guide_task],
+#     verbose=True
+# )
+
+# Exporta as três crews
+__all__ = ["advisor_crew", "insight_profiler_crew"] #"trail_guide_crew"]
