@@ -1,5 +1,9 @@
 import os
+import sys
 from dotenv import load_dotenv
+
+# Adiciona o diretório raiz ao path para permitir importações
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Carrega variáveis de ambiente
 load_dotenv()

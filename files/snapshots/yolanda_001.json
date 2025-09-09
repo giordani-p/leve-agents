@@ -1,0 +1,22 @@
+{
+  "nome_preferido": "Yô",
+  "idade": 19,
+  "estagio_escolar": "estudante universitário (3º semestre de Administração)",
+  "area_interesse": "Não definida",
+  "objetivo_carreira": "Descobrir uma área de atuação que combine com seus talentos e interesses pessoais. Encontrar um novo caminho profissional que faça sentido, superando a frustração.",
+  "localizacao_preferida": "Não definida (aberta a opções)",
+  "disponibilidade_tempo": "Meio-período (a conciliar com a faculdade)",
+  "habilidades_tecnicas": [
+    "Conhecimento teórico em Administração",
+    "Pacote Office"
+  ],
+  "habilidades_comportamentais": [
+    "Boas notas (dedicação)",
+    "Habilidades de organização",
+    "Capacidade de seguir instruções"
+  ],
+  "experiencias_relevantes": [
+    "Estudante de graduação (curso de Administração)",
+    "Boas notas (evidência de disciplina)"
+  ]
+}

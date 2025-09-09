@@ -1,24 +1,24 @@
 {
-  "macroperfil": "O jovem busca desenvolvimento prático para melhorar seu trabalho atual, com foco em soluções simples e aplicáveis.",
-  "caracteristicas_chave": ["Pragmático", "Trabalhador", "Resiliente"],
-  "objetivos_detectados": [
-    "Aprender programação do zero",
-    "Automatizar tarefas do trabalho",
-    "Organizar planilhas de dados"
+  "nome_preferido": "Pablo",
+  "idade": "20 a 26 anos",
+  "estagio_escolar": "estudante universitário (bolsista via ENEM)",
+  "area_interesse": "Tecnologia da Informação (TI)",
+  "objetivo_carreira": "Conseguir o primeiro estágio na área de TI, criar um portfólio do zero, entender as habilidades exigidas no mercado e como fazer networking.",
+  "localizacao_preferida": "Interior do Brasil",
+  "disponibilidade_tempo": "Meio-período (a conciliar com os estudos)",
+  "habilidades_tecnicas": [
+    "Uso básico de computador",
+    "Conhecimento teórico (curso universitário)",
+    "Habilidades autodidatas"
   ],
-  "dificuldades_detectadas": ["Internet instável em casa", "Computador compartilhado"],
-  "hipoteses_a_validar": [
-    "Prefere atividades curtas e práticas",
-    "Aprendizagem voltada a resultados imediatos"
+  "habilidades_comportamentais": [
+    "Resiliência (trabalho prévio na roça/comércio)",
+    "Proatividade (curiosidade por tecnologia)",
+    "Foco e disciplina (estudos via bolsa)"
   ],
-  "recomendacoes": [
-    "Começar por Python básico e scripts simples",
-    "Usar planilhas e fórmulas do Excel para controle",
-    "Aplicar exemplos do dia a dia do campo"
-  ],
-  "next_questions": [
-    "Quais tarefas você mais repete no trabalho?",
-    "Você já usa planilhas para organizar dados do dia?"
-  ],
-  "alerts_politicas": ["não informado"]
+  "experiencias_relevantes": [
+    "Trabalho na roça ou comércio local (experiência de trabalho formal e informal)",
+    "Projetos acadêmicos (curso universitário)",
+    "Autodidatismo em tecnologia (pesquisa por conta própria)"
+  ]
 }

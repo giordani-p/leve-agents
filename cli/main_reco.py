@@ -39,8 +39,8 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--snapshot-path",
-        default="files/snapshots/carlos_001.json",
-        help="Caminho do JSON de snapshot (default: files/snapshots/carlos_001.json).",
+        default="files/snapshots/pablo_agro_001.json",
+        help="Caminho do JSON de snapshot (default: files/snapshots/pablo_agro_001.json).",
     )
     parser.add_argument(
         "--trails-path",

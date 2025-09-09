@@ -26,6 +26,5 @@ insight_profiler_agent = Agent(
     verbose=True,
     allow_delegation=False,
     llm=llm,
-    tools=[], 
-   
+    tools=[]
 )
