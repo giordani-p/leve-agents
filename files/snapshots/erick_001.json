@@ -1,0 +1,119 @@
+{
+  "dados_pessoais": {
+    "nome_preferido": "João",
+    "idade": "18 a 24 anos",
+    "localizacao_preferida": "Não especificada",
+    "disponibilidade_tempo": "Não especificada"
+  },
+  "situacao_academica": {
+    "estagio_escolar": "estudante do ensino médio",
+    "curso_atual": "Ensino Médio",
+    "instituicao": "Não especificada",
+    "ano_inicio": "Não especificado",
+    "previsao_formatura": "Não especificada",
+    "nota_media": "Não especificada",
+    "materias_favoritas": ["Não especificadas"],
+    "materias_dificuldade": ["Não especificadas"]
+  },
+  "objetivos_carreira": {
+    "objetivo_principal": "Aprender a usar IA nos estudos com responsabilidade",
+    "objetivos_especificos": [
+      "Aprender a usar IA nos estudos com boas práticas",
+      "Entender limites e ética da IA",
+      "Aplicar IA de forma responsável"
+    ],
+    "metas_temporais": {
+      "curto_prazo": ["começar com noções básicas", "seguir checklist de uso responsável"],
+      "medio_prazo": ["aplicar IA em matérias específicas", "desenvolver boas práticas"],
+      "longo_prazo": ["usar IA como ferramenta de aprendizado", "entender ética e limites"]
+    }
+  },
+  "habilidades_competencias": {
+    "habilidades_tecnicas": [
+      "Conhecimento básico de IA",
+      "Uso de ferramentas digitais"
+    ],
+    "habilidades_comportamentais": [
+      "Questionador e cauteloso",
+      "Autônomo e responsável",
+      "Interesse em aprender com ética"
+    ],
+    "experiencias_relevantes": [
+      "Estudante interessado em tecnologia",
+      "Busca por uso responsável de IA"
+    ]
+  },
+  "preferencias_aprendizado": {
+    "modalidade_preferida": "pratica",
+    "ritmo_aprendizado": "moderado",
+    "horario_estudo": "flexível",
+    "recursos_preferidos": ["checklists", "orientações objetivas", "exemplos práticos"],
+    "dificuldades_aprendizado": ["sem acesso a ferramentas pagas", "incerteza sobre o que é permitido"]
+  },
+  "aspiracoes_profissionais": {
+    "area_interesse": "Tecnologia e IA",
+    "salario_desejado": "Não especificado",
+    "tipo_empresa": "flexível",
+    "tamanho_equipe": "flexível",
+    "impacto_desejado": "pessoal",
+    "crescimento_carreira": "moderado",
+    "equilibrio_vida": "importante"
+  },
+  "barreiras_desafios": {
+    "barreiras_tecnicas": ["sem acesso a ferramentas pagas", "incerteza sobre limites"],
+    "barreiras_sociais": ["falta de orientação sobre ética"],
+    "barreiras_financeiras": ["recursos limitados para ferramentas"],
+    "barreiras_geograficas": ["oportunidades limitadas"]
+  },
+  "interesses_pessoais": {
+    "hobbies": ["tecnologia", "aprendizado"],
+    "areas_curiosidade": ["inteligência artificial", "ética tecnológica"],
+    "atividades_extracurriculares": ["estudos", "pesquisa sobre IA"],
+    "consumo_midia": ["conteúdo sobre tecnologia", "documentários sobre IA"]
+  },
+  "contexto_socioeconomico": {
+    "origem": "Não especificada",
+    "situacao_financeira": "Recursos limitados",
+    "acesso_tecnologia": "Básico",
+    "rede_social": "Não especificada"
+  },
+  "perfil_disc": {
+    "perfil_principal": "Alto C - Médio S",
+    "caracteristicas_chave": [
+      "Questionador e cauteloso",
+      "Autônomo e responsável",
+      "Interessado em aprender com ética"
+    ],
+    "estilo_trabalho": {
+      "comunicacao": "Cautelosa e questionadora",
+      "lideranca": "Independente, gosta de trabalhar sozinho",
+      "motivacao": "Aprendizado ético e responsável"
+    },
+    "areas_compatibilidade": [
+      "Pesquisa e Desenvolvimento",
+      "Tecnologia e Inovação",
+      "Educação e Aprendizado",
+      "Ética e Compliance"
+    ],
+    "pontos_atencao": [
+      "Precisa de orientação clara sobre limites",
+      "Gosta de trabalhar de forma independente",
+      "Valoriza ética e responsabilidade"
+    ]
+  },
+  "talentos_cliftonstrengths": {
+    "talentos_dominantes": [
+      "Analítico",
+      "Responsabilidade",
+      "Cautela"
+    ],
+    "talentos_secundarios": [
+      "Aprendizado",
+      "Foco"
+    ],
+    "talentos_desenvolvimento": [
+      "Conector",
+      "Desenvolvedor"
+    ]
+  }
+}

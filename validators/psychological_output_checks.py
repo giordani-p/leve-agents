@@ -1,5 +1,5 @@
-# validators/profile_output_checks.py
-from schemas.profile_output import ProfileOutput
+# validators/psychological_output_checks.py
+from schemas.psychological_output import PsychologicalOutput
 from typing import List
 from pydantic import BaseModel
 
@@ -8,16 +8,16 @@ class ProfileValidationResult(BaseModel):
     valid: bool
     errors: List[str] = []
     warnings: List[str] = []
-    normalized: ProfileOutput = None
+    normalized: PsychologicalOutput = None
 
 # Validador principal de negócio para o Agent 01
-def validate_profile_output(raw_json: dict) -> ProfileValidationResult:
+def validate_psychological_output(raw_json: dict) -> ProfileValidationResult:
     errors = []
     warnings = []
 
     try:
         # Valida estrutura com o schema Pydantic
-        parsed = ProfileOutput.model_validate(raw_json)
+        parsed = PsychologicalOutput.model_validate(raw_json)
     except Exception as e:
         return ProfileValidationResult(
             valid=False,
@@ -26,13 +26,15 @@ def validate_profile_output(raw_json: dict) -> ProfileValidationResult:
 
     # Verifica se todos os campos de lista têm pelo menos 1 item ou 'não informado'
     list_fields = [
-        "caracteristicas_chave",
-        "objetivos_detectados",
-        "dificuldades_detectadas",
-        "hipoteses_a_validar",
-        "recomendacoes",
-        "next_questions",
-        "alerts_politicas"
+        "motivacoes_principais",
+        "valores_core",
+        "gatilhos_estresse",
+        "areas_desenvolvimento",
+        "pontos_fortes",
+        "desafios_comportamentais",
+        "perfis_carreira_compativel",
+        "estrategias_personalizacao",
+        "alertas_importantes"
     ]
 
     for field in list_fields:
@@ -56,8 +58,15 @@ def validate_profile_output(raw_json: dict) -> ProfileValidationResult:
 
     # Valida tamanho máximo das listas (quando aplicável)
     max_len_fields = {
-        "caracteristicas_chave": 5,
-        "next_questions": 3
+        "motivacoes_principais": 3,
+        "valores_core": 3,
+        "gatilhos_estresse": 3,
+        "areas_desenvolvimento": 3,
+        "pontos_fortes": 3,
+        "desafios_comportamentais": 3,
+        "perfis_carreira_compativel": 3,
+        "estrategias_personalizacao": 3,
+        "alertas_importantes": 3
     }
 
     for field, max_len in max_len_fields.items():
@@ -68,7 +77,7 @@ def validate_profile_output(raw_json: dict) -> ProfileValidationResult:
     # Verificação leve de PII (nome, email, telefone, endereço, CPF, etc.)
     texto_completo = parsed.model_dump_json()
 
-    termos_pii = ["@gmail", "@hotmail", "@yahoo", "telefone", "cpf", "rg", "endereço", "bairro", "cidade"]
+    termos_pii = ["@gmail", "@hotmail", "@yahoo", "telefone", "cpf", " endereço", " bairro", " cidade"]
     for termo in termos_pii:
         if termo.lower() in texto_completo.lower():
             errors.append(f"Possível PII detectado: '{termo}'.")

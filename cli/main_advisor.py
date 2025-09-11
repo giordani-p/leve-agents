@@ -1,8 +1,26 @@
+# cli/main_advisor.py
+"""
+CLI do Orientador Educacional
+- Lê o interesse e preferência do usuário
+- Executa o crew de orientação educacional e imprime o resultado validado no terminal
+- Por padrão imprime de forma "amigável"; use --json para ver o objeto completo
+
+Exemplos:
+  python -m cli.main_advisor -i "programação" -p "online"
+  python -m cli.main_advisor -i "medicina" -p "presencial, SP" --json
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
 import os
 import sys
+from typing import Optional
+
 import agentops
-import json
 from dotenv import load_dotenv
+from pydantic import ValidationError
 
 # Adiciona o diretório raiz ao path para permitir importações
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -10,32 +28,80 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
 
 from crew_config import advisor_crew
-
 from schemas.advisor_inputs import UserInput
-from pydantic import ValidationError
-
-from schemas.advisor_output import OutputAdvisor  # schema da saída (contrato JSON)
-from validators.advisor_output_checks import validate_output_contract  # regras de negócio
+from schemas.advisor_output import OutputAdvisor
+from validators.advisor_output_checks import validate_output_contract
 from helpers.json_extractor import try_extract_json
 
 agentops.init()
 
-if __name__ == "__main__":
-    print("Bem-vindo ao Orientador Educacional!\n")
 
-    # Captura os dados fornecidos pelo usuário
-    interesse = input("O que você gostaria de aprender ou fazer no futuro?\n")
-    preferencia = input("Qual formato ou região você prefere (ex: online, presencial, SP, exterior)?\n")
+def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="advisor-cli",
+        description="Orientador Educacional — Leve",
+    )
+    parser.add_argument(
+        "-i", "--interesse",
+        required=True,
+        help="O que você gostaria de aprender ou fazer no futuro?",
+    )
+    parser.add_argument(
+        "-p", "--preferencia",
+        required=True,
+        help="Qual formato ou região você prefere (ex: online, presencial, SP, exterior)?",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Imprime o objeto OutputAdvisor completo em JSON.",
+    )
+    return parser.parse_args(argv)
+
+
+def _print_pretty(output: OutputAdvisor) -> None:
+    """Imprime o resultado de forma amigável."""
+    print("\n🎓 Orientação Educacional")
+    print("=" * 50)
+    
+    if hasattr(output, 'courses') and output.courses:
+        print(f"\n📚 Cursos Recomendados:")
+        for i, course in enumerate(output.courses, 1):
+            print(f"   {i}. {course.get('name', 'N/A')}")
+            if course.get('description'):
+                print(f"      {course['description']}")
+    
+    if hasattr(output, 'institutions') and output.institutions:
+        print(f"\n🏫 Instituições Sugeridas:")
+        for inst in output.institutions:
+            print(f"   • {inst.get('name', 'N/A')}")
+    
+    if hasattr(output, 'advice') and output.advice:
+        print(f"\n💡 Conselhos:")
+        print(f"   {output.advice}")
+    
+    print("\n" + "=" * 50)
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    args = _parse_args(argv)
+
+    # Valida os dados usando o schema Pydantic
+    try:
+        user_input = UserInput(
+            interesse=args.interesse,
+            preferencia=args.preferencia
+        )
+    except ValidationError as e:
+        print(f"[ERRO] Entrada inválida: {e}", file=sys.stderr)
+        return 2
+    except Exception as e:
+        print(f"[ERRO] Erro inesperado ao processar o input: {e}", file=sys.stderr)
+        return 2
+
+    print("\nProcessando sua solicitação...")
 
     try:
-        # Valida os dados usando o schema Pydantic
-        user_input = UserInput(
-            interesse=interesse,
-            preferencia=preferencia
-        )
-
-        print("\nProcessando sua solicitação...")
-
         # Executa o Crew com os inputs validados
         result = advisor_crew.kickoff(inputs={
             "interesse": user_input.interesse,
@@ -47,20 +113,19 @@ if __name__ == "__main__":
         json_dict = try_extract_json(raw_text)
 
         if json_dict is None:
-            print("\nErro: a resposta do modelo não veio em JSON puro conforme o expected_output.")
-            print("Conteúdo bruto recebido (parcial para diagnóstico):")
-            print(raw_text[:1000]) 
-            raise SystemExit(1)
+            print("[ERRO] A resposta do modelo não veio em JSON puro conforme o expected_output.", file=sys.stderr)
+            print("Conteúdo bruto recebido (parcial para diagnóstico):", file=sys.stderr)
+            print(raw_text[:1000], file=sys.stderr)
+            return 1
 
         # validação de esquema (estrutura/tipos/limites)
         try:
-            _ = OutputAdvisor.model_validate(json_dict)
+            output_obj = OutputAdvisor.model_validate(json_dict)
         except ValidationError as ve:
-            print("\nErro de validação do esquema de saída (OutputContract):")
-            print(ve)
-            print("\nJSON extraído (para revisão):")
-            print(json.dumps(json_dict, ensure_ascii=False, indent=2))
-            raise SystemExit(1)
+            print(f"[ERRO] Erro de validação do esquema de saída: {ve}", file=sys.stderr)
+            print("\nJSON extraído (para revisão):", file=sys.stderr)
+            print(json.dumps(json_dict, ensure_ascii=False, indent=2), file=sys.stderr)
+            return 1
 
         # validações de negócio (ranks, fontes, modalidade vs preferência, etc.)
         validation = validate_output_contract(
@@ -70,41 +135,43 @@ if __name__ == "__main__":
         )
 
         if not validation.valid:
-            print("\nResultado inválido segundo as regras de negócio.")
-            print("\nErros:")
+            print("[ERRO] Resultado inválido segundo as regras de negócio.", file=sys.stderr)
+            print("\nErros:", file=sys.stderr)
             for err in validation.errors:
-                print("-", err)
+                print(f"- {err}", file=sys.stderr)
 
             if validation.warnings:
-                print("\nAvisos:")
+                print("\nAvisos:", file=sys.stderr)
                 for warn in validation.warnings:
-                    print("-", warn)
+                    print(f"- {warn}", file=sys.stderr)
 
             if validation.normalized:
-                print("\nSaída normalizada (para diagnóstico):")
-                print(json.dumps(validation.normalized.model_dump(mode="json"), ensure_ascii=False, indent=2))
+                print("\nSaída normalizada (para diagnóstico):", file=sys.stderr)
+                print(json.dumps(validation.normalized.model_dump(mode="json"), ensure_ascii=False, indent=2), file=sys.stderr)
             else:
-                print("\nJSON recebido (para diagnóstico):")
-                print(json.dumps(json_dict, ensure_ascii=False, indent=2))
+                print("\nJSON recebido (para diagnóstico):", file=sys.stderr)
+                print(json.dumps(json_dict, ensure_ascii=False, indent=2), file=sys.stderr)
 
-            raise SystemExit(1)
+            return 1
 
-        # caso válido — imprime saída normalizada e avisos (se houver)
-        print("\nResultado final (JSON validado e normalizado):\n")
-        print(json.dumps(validation.normalized.model_dump(mode="json"), ensure_ascii=False, indent=2))
+        # Impressão
+        if args.json:
+            print(validation.normalized.model_dump_json(indent=2))
+        else:
+            _print_pretty(validation.normalized)
 
         if validation.warnings:
             print("\nAvisos (não bloqueantes):")
             for warn in validation.warnings:
-                print("-", warn)
+                print(f"- {warn}")
 
-    # Captura e exibe erros de validação do input do usuário
-    except ValidationError as e:
-        print("\nErro nos dados fornecidos:")
-        for error in e.errors():
-            print(f"- {error['loc'][0]}: {error['msg']}")
+        return 0
 
-    # Captura outros erros inesperados (como problemas com LLMs ou dependências)
     except Exception as e:
-        print(f"\nErro inesperado: {e}")
-        print("Verifique se todas as dependências estão instaladas e as chaves de API configuradas.")
+        print(f"[ERRO] Erro inesperado: {e}", file=sys.stderr)
+        print("Verifique se todas as dependências estão instaladas e as chaves de API configuradas.", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

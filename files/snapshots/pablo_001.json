@@ -1,0 +1,134 @@
+{
+  "dados_pessoais": {
+    "nome_preferido": "Pablo",
+    "idade": "20 a 26 anos",
+    "localizacao": "Interior do Brasil"
+  },
+  
+  "situacao_academica": {
+    "estagio_escolar": "estudante universitário (bolsista via ENEM)",
+    "curso_atual": "Ciência da Computação",
+    "instituicao": "Universidade Federal",
+    "ano_inicio": "2022",
+    "previsao_formatura": "2026",
+    "nota_media": "8.5",
+    "materias_favoritas": ["Programação", "Algoritmos", "Banco de Dados"],
+    "materias_dificuldade": ["Cálculo", "Física"]
+  },
+  
+  "objetivos_carreira": {
+    "objetivo_principal": "Conseguir o primeiro estágio na área de TI",
+    "objetivos_especificos": [
+      "Criar um portfólio técnico do zero",
+      "Entender as habilidades exigidas no mercado",
+      "Fazer networking profissional",
+      "Aprender tecnologias demandadas"
+    ],
+    "metas_temporais": {
+      "curto_prazo": ["conseguir estágio em 6 meses", "completar curso online"],
+      "medio_prazo": ["formar em 2026", "ter portfólio sólido"],
+      "longo_prazo": ["trabalhar em empresa tech", "ser especialista em IA"]
+    }
+  },
+  
+  "habilidades_competencias": {
+    "tecnicas": [
+      "Uso básico de computador",
+      "Conhecimento teórico (curso universitário)",
+      "Habilidades autodidatas"
+    ],
+    "comportamentais": [
+      "Resiliência (trabalho prévio na roça/comércio)",
+      "Proatividade (curiosidade por tecnologia)",
+      "Foco e disciplina (estudos via bolsa)",
+      "Determinação para superar desafios",
+      "Capacidade de aprendizado autodirigido"
+    ],
+    "experiencias_relevantes": [
+      "Trabalho na roça/comércio local (experiência de trabalho formal e informal)",
+      "Projetos acadêmicos (curso universitário)",
+      "Autodidatismo em tecnologia (pesquisa por conta própria)"
+    ]
+  },
+  
+  "preferencias_aprendizado": {
+    "modalidade_preferida": "pratica",
+    "ritmo_aprendizado": "acelerado",
+    "horario_estudo": "noturno",
+    "recursos_preferidos": ["vídeos", "projetos práticos", "mentoria"],
+    "dificuldades_aprendizado": ["teoria abstrata", "matemática avançada"]
+  },
+  
+  "aspiracoes_profissionais": {
+    "salario_desejado": "3000-5000",
+    "tipo_empresa": "startup",
+    "tamanho_equipe": "pequena",
+    "impacto_desejado": "social",
+    "crescimento_carreira": "rápido",
+    "equilibrio_vida": "importante",
+    "disponibilidade_tempo": "Meio-período (a conciliar com os estudos)"
+  },
+  
+  "barreiras_desafios": {
+    "tecnicas": ["falta de experiência prática", "conhecimento limitado de ferramentas"],
+    "sociais": ["networking limitado", "falta de mentores"],
+    "financeiras": ["recursos limitados para cursos", "equipamentos"],
+    "geograficas": ["oportunidades limitadas na região"]
+  },
+  
+  "interesses_pessoais": {
+    "hobbies": ["jogos", "música", "esportes"],
+    "areas_curiosidade": ["inteligência artificial", "desenvolvimento mobile"],
+    "atividades_extracurriculares": ["grupo de estudos", "voluntariado"],
+    "consumo_midia": ["YouTube técnico", "podcasts de tecnologia"]
+  },
+  
+  "contexto_socioeconomico": {
+    "origem": "Interior do Brasil",
+    "situacao_financeira": "Bolsa de estudos via ENEM",
+    "acesso_tecnologia": "Limitado, mas com interesse e dedicação",
+    "rede_social": "Principalmente local, buscando expandir"
+  },
+  
+  "perfil_disc": {
+    "perfil_principal": "Alto D - Médio I",
+    "caracteristicas_chave": [
+      "Orientado a resultados e objetivos",
+      "Proativo e determinado",
+      "Comunicativo e influenciador",
+      "Gosta de desafios e superação"
+    ],
+    "estilo_trabalho": {
+      "comunicacao": "Direta e objetiva",
+      "lideranca": "Natural, gosta de tomar iniciativa",
+      "motivacao": "Resultados concretos e reconhecimento"
+    },
+    "areas_compatibilidade": [
+      "Desenvolvimento de Software",
+      "Gestão de Projetos", 
+      "Vendas Técnicas",
+      "Empreendedorismo"
+    ],
+    "pontos_atencao": [
+      "Pode ser impaciente com processos lentos",
+      "Precisa de feedback constante sobre progresso",
+      "Gosta de autonomia e liberdade para executar"
+    ]
+  },
+  
+  "talentos_cliftonstrengths": {
+    "talentos_dominantes": [
+      "Realização",
+      "Iniciativa",
+      "Conector"
+    ],
+    "talentos_secundarios": [
+      "Empatia",
+      "Analítico"
+    ],
+    "talentos_desenvolvimento": [
+      "Estratégico",
+      "Foco"
+    ]
+  }
+}

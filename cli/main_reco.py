@@ -13,6 +13,7 @@ Exemplos:
   python -m cli.main_reco -q "Quero aprender programação do zero"
   python -m cli.main_reco -q "Como organizar meus estudos?" --json
   python -m cli.main_reco -q "trilhas para iniciantes" --source api --api-base http://localhost:3000
+  python -m cli.main_reco -q "Quais areas combinam mais com o meu perfil?" --source files --snapshot-path files/snapshots/ana_001.json
 """
 
 from __future__ import annotations

@@ -1,0 +1,512 @@
+[
+    {
+      "id": "talento_realizacao",
+      "text": "Se você tem o talento de Realização, é do tipo que não sossega enquanto não vê as coisas feitas. Gosta de estar em movimento, de cumprir o que promete e sente satisfação quando vê o resultado do próprio esforço. Esse talento é muito útil em áreas que pedem entrega constante, como eventos, produção, gestão de tarefas ou projetos.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "realização",
+          "produtividade",
+          "comprometimento",
+          "trabalho duro"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Achiever); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_iniciativa",
+      "text": "Quem tem o talento de Iniciativa adora tirar ideias do papel. Você é o tipo de pessoa que não espera os outros começarem – vai lá e faz. Gosta de movimento, de começar projetos e fazer as coisas acontecerem. Combina com áreas como empreendedorismo, marketing, comunicação e liderança em times jovens.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "iniciativa",
+          "ação",
+          "liderança",
+          "movimento"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Activator); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_adaptabilidade",
+      "text": "Se você é do tipo que lida bem com mudanças e não se desespera quando os planos mudam, você tem o talento de Adaptabilidade. Gosta de viver o presente e consegue se virar mesmo quando tudo sai do esperado. Esse talento brilha em áreas como atendimento, eventos, suporte e profissões com rotina flexível.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "adaptabilidade",
+          "flexibilidade",
+          "resiliência",
+          "imprevistos"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Adaptability); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_analitico",
+      "text": "Pessoas com o talento Analítico gostam de entender o porquê das coisas. Curtem investigar, fazer perguntas e encontrar respostas com base em fatos. Esse perfil combina com áreas como tecnologia, ciência, engenharia, finanças ou qualquer profissão que envolva lógica e raciocínio.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "analítico",
+          "curiosidade",
+          "investigação",
+          "raciocínio"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Analytical); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_organizador",
+      "text": "Se você gosta de organizar pessoas, tarefas e recursos pra tudo funcionar melhor, você tem o talento de Organização. Costuma se dar bem coordenando atividades, ajustando horários ou resolvendo imprevistos. Ideal pra áreas como produção, logística, gestão de projetos e eventos.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "organização",
+          "coordenação",
+          "planejamento",
+          "dinamismo"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Arranger); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_crenca",
+      "text": "Quem tem o talento de Crença é guiado por valores fortes. Você busca um propósito no que faz e quer trabalhar com algo que faça sentido pra você. Normalmente se dá bem em profissões ligadas a causas sociais, educação, saúde, meio ambiente ou qualquer área com impacto positivo na vida das pessoas.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "crença",
+          "valores",
+          "propósito",
+          "impacto social"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Belief); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_firmeza",
+      "text": "Se você tem opinião forte, não foge de conversas difíceis e costuma tomar a frente quando o grupo precisa, você tem o talento de Firmeza. É uma liderança natural e não tem medo de tomar decisões. Esse perfil se destaca em liderança, negócios, direito, vendas ou defesa de causas.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "liderança",
+          "firmeza",
+          "decisão",
+          "autoconfiança"
+        ],
+        "nível": "avancado"
+      },
+      "fonte": "Gallup – CliftonStrengths (Command); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_comunicacao",
+      "text": "Se você se comunica bem, gosta de conversar, explicar ideias e envolver pessoas com palavras, você tem o talento de Comunicação. Esse talento combina com áreas como jornalismo, publicidade, ensino, teatro, eventos e redes sociais.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "comunicação",
+          "fala",
+          "expressão",
+          "influência"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Communication); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_competicao",
+      "text": "Se você gosta de desafios, de bater metas e de se superar, tem o talento de Competitividade. É alguém que se motiva com rankings, comparações e vitórias. Esse talento aparece bastante em esportes, vendas, metas de desempenho e negócios.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "competição",
+          "metas",
+          "desempenho",
+          "superação"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Competition); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_conexao",
+      "text": "Se você acredita que tudo está ligado, valoriza as relações e enxerga um sentido maior nas coisas, você tem o talento de Conexão. Costuma ser empático e sensível. Esse talento aparece em áreas como terapia, arte, espiritualidade, educação e trabalho comunitário.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "conexão",
+          "sentido",
+          "espiritualidade",
+          "empatia"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Connectedness); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_consistencia",
+      "text": "Se você acredita que todos devem ser tratados com justiça e igualdade, provavelmente tem o talento de Consistência. Você gosta de regras claras e busca manter o equilíbrio entre as pessoas. Esse talento combina com áreas como administração pública, direito, recursos humanos ou trabalhos em equipe com regras bem definidas.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "justiça",
+          "igualdade",
+          "regras",
+          "consistência"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Consistency); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_contexto",
+      "text": "Se você gosta de entender o passado pra tomar boas decisões no presente, tem o talento de Contexto. Você costuma aprender com a história das pessoas, das empresas ou do mundo. Isso é útil em áreas como história, jornalismo, educação, genealogia ou qualquer profissão que olhe pro que já aconteceu pra planejar o futuro.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "história",
+          "contexto",
+          "memória",
+          "planejamento"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Context); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_cuidador",
+      "text": "Se você gosta de ajudar, apoiar e cuidar das pessoas, tem o talento de Cuidador. Você se importa de verdade com quem está à sua volta e quer ver os outros bem. Esse talento aparece em profissões como enfermagem, assistência social, psicologia, pedagogia ou qualquer função de apoio.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "apoio",
+          "ajuda",
+          "cuidado",
+          "relacionamentos"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Developer); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_determinacao",
+      "text": "Pessoas com o talento de Determinação são persistentes, não desistem fácil e gostam de desafios. Você se motiva a continuar mesmo quando o caminho é difícil. Esse talento é útil em áreas como vendas, esportes, liderança, empreendedorismo e projetos de longo prazo.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "determinação",
+          "resiliência",
+          "foco",
+          "superação"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Discipline); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_empreendedor",
+      "text": "Se você gosta de ter ideias novas, resolver problemas e pensar em soluções diferentes, tem o talento de Empreendedorismo. Você vê oportunidades onde os outros veem dificuldades. Esse talento combina com inovação, startups, criação de projetos ou carreiras criativas.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "criatividade",
+          "empreendedorismo",
+          "inovação",
+          "soluções"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Ideation); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_empatia",
+      "text": "Se você sente o que os outros sentem e entende as emoções das pessoas ao seu redor, você tem o talento de Empatia. Você é sensível, acolhedor e costuma ser procurado por amigos que precisam desabafar. Esse talento se encaixa bem em profissões de cuidado, como psicologia, educação, enfermagem e áreas sociais.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "empatia",
+          "emoções",
+          "escuta",
+          "acolhimento"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Empathy); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_organizado",
+      "text": "Se você gosta de ter tudo em ordem, com planejamento e rotina, você tem o talento de Organização. Você se sente mais confiante quando consegue prever o que vem pela frente. Esse perfil é ótimo pra áreas como contabilidade, logística, planejamento, gestão e tarefas administrativas.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "organização",
+          "planejamento",
+          "rotina",
+          "estrutura"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Discipline); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_positivo",
+      "text": "Se você costuma ver o lado bom das coisas, mesmo nos momentos difíceis, tem o talento de Otimismo. Você anima o ambiente, contagia os outros com sua energia e ajuda o grupo a seguir em frente. Esse talento brilha em profissões com público, eventos, educação, motivação ou liderança.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "otimismo",
+          "alegria",
+          "motivação",
+          "positividade"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Positivity); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_foco",
+      "text": "Pessoas com o talento de Foco sabem onde querem chegar e mantêm a atenção no que realmente importa. Você é do tipo que traça metas e vai atrás. Esse perfil é ideal para projetos de longo prazo, estudos exigentes, planejamento estratégico ou metas pessoais e profissionais.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "foco",
+          "metas",
+          "prioridades",
+          "concentração"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Focus); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_futurista",
+      "text": "Se você gosta de imaginar possibilidades, sonhar com o que ainda não existe e inspirar os outros com suas ideias, tem o talento de Visão de Futuro. Você pensa à frente e gosta de planejar o que ainda está por vir. Esse talento aparece em inovação, estratégia, planejamento e liderança com visão.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "futuro",
+          "visão",
+          "sonhos",
+          "planejamento"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Futuristic); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_harmonia",
+      "text": "Se você gosta de evitar conflitos e buscar equilíbrio nas relações, tem o talento de Harmonia. Você é do tipo que escuta todos os lados e tenta encontrar um caminho do meio. Esse talento é ótimo em trabalhos em equipe, mediação, recursos humanos e ambientes que precisam de colaboração.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "harmonia",
+          "equilíbrio",
+          "mediação",
+          "relacionamento"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Harmony); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_ideias",
+      "text": "Quem tem o talento de Geração de Ideias costuma ter pensamentos criativos o tempo todo. Você enxerga conexões diferentes e pensa fora da caixa. Isso é muito útil em áreas como inovação, publicidade, tecnologia, educação e solução de problemas.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "criatividade",
+          "ideias",
+          "inovação",
+          "conexões"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Ideation); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_inclusao",
+      "text": "Se você se preocupa com quem fica de fora e faz questão de incluir todo mundo, tem o talento de Inclusão. Você valoriza as diferenças e quer que todas as pessoas se sintam parte. Esse talento brilha em áreas como educação, gestão de pessoas, diversidade, eventos e projetos sociais.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "inclusão",
+          "acolhimento",
+          "diversidade",
+          "empatia"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Includer); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_individualizacao",
+      "text": "Quem tem o talento de Individualização percebe o que torna cada pessoa única. Você presta atenção nos detalhes e sabe adaptar abordagens conforme o perfil de cada um. Esse talento aparece em liderança, mentoria, RH, educação e atendimento personalizado.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "individualização",
+          "personalização",
+          "atenção",
+          "relacionamentos"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Individualization); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_intelectual",
+      "text": "Se você curte refletir, gosta de pensar sobre a vida, sobre ideias profundas e aprende com a própria cabeça, você tem o talento de Intelectual. É um talento que se encaixa bem em filosofia, pesquisa, escrita, educação, psicologia ou estratégia.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "reflexão",
+          "pensamento",
+          "autoconhecimento",
+          "ideias"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Intellection); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_aprendizado",
+      "text": "Se você sente prazer em aprender coisas novas, tem o talento de Aprendizado. Você curte cursos, tutoriais, leituras e desafios que exigem estudo. Isso é útil em qualquer profissão, mas aparece muito em educação, tecnologia, ciência e desenvolvimento pessoal.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "aprendizado",
+          "curiosidade",
+          "estudo",
+          "evolução"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Learner); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_maximizador",
+      "text": "Quem tem o talento de Potencialização gosta de transformar o que já é bom em algo ainda melhor. Você busca excelência e gosta de ver pessoas e projetos crescerem. Esse talento aparece em liderança, consultoria, mentoria, empreendedorismo e educação.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "excelência",
+          "melhoria",
+          "potencial",
+          "desenvolvimento"
+        ],
+        "nível": "avancado"
+      },
+      "fonte": "Gallup – CliftonStrengths (Maximizer); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_positivismo",
+      "text": "Se você vê o lado bom das coisas, mesmo em situações difíceis, e contagia os outros com seu jeito, você tem o talento de Positivismo. Esse talento brilha em áreas como eventos, ensino, vendas, atendimento e qualquer profissão que envolva lidar com pessoas.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "positividade",
+          "otimismo",
+          "influência",
+          "motivação"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Positivity); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_relacionamento",
+      "text": "Se você gosta de construir conexões verdadeiras, manter amizades e crescer junto com os outros, tem o talento de Relacionamento. Você valoriza vínculos profundos. É ideal para áreas como mentoria, gestão de pessoas, educação, vendas e trabalho em equipe.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "relacionamento",
+          "amizade",
+          "conexão",
+          "confiança"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths (Relator); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_responsabilidade",
+      "text": "Se você é do tipo que cumpre o que promete, leva os compromissos a sério e tem um senso forte de dever, tem o talento de Responsabilidade. Esse perfil é essencial em qualquer profissão que exija confiança, como administração, jurídico, saúde ou liderança.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "compromisso",
+          "ética",
+          "dever",
+          "confiança"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Responsibility); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_autoconfianca",
+      "text": "Se você acredita nas suas decisões, age com segurança e não depende tanto da opinião dos outros, você tem o talento de Autoconfiança. É um talento que aparece em empreendedorismo, liderança, comunicação, artes e outras áreas onde é preciso confiar em si mesmo.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "autoconfiança",
+          "decisão",
+          "segurança",
+          "liderança"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths (Self-Assurance); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "talento_estrategia",
+      "text": "Se você enxerga caminhos possíveis e alternativas com facilidade, tem o talento de Estratégia. Você ajuda grupos a decidir com mais clareza e a evitar erros. É muito valorizado em planejamento, gestão, negócios, consultoria e até jogos mentais.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "estratégia",
+          "decisão",
+          "planejamento",
+          "lógica"
+        ],
+        "nível": "avancado"
+      },
+      "fonte": "Gallup – CliftonStrengths (Strategic); adaptado com foco vocacional e linguagem jovem"
+    },
+    {
+      "id": "clifton_geral_01",
+      "text": "A metodologia CliftonStrengths ajuda você a descobrir seus talentos naturais — aquilo que você faz bem de forma espontânea. Em vez de focar nos seus pontos fracos, ela te mostra como usar o que já tem de melhor pra crescer nos estudos, na carreira e na vida. É como encontrar uma bússola que aponta para o que faz sentido pra você.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "cliftonstrengths",
+          "autoconhecimento",
+          "talentos",
+          "vocação"
+        ],
+        "nível": "iniciante"
+      },
+      "fonte": "Gallup – CliftonStrengths; introdução adaptada com linguagem jovem"
+    },
+    {
+      "id": "clifton_geral_02",
+      "text": "Saber quais são seus talentos com o CliftonStrengths ajuda muito na hora de escolher uma profissão, se preparar para entrevistas ou até pensar no que estudar. Por exemplo: se você tem talento com pessoas, pode explorar áreas de educação, comunicação ou liderança. Se seu talento é mais analítico, áreas como dados, exatas ou planejamento fazem mais sentido. O segredo é usar o que você já tem pra construir o seu caminho.",
+      "metadata": {
+        "categoria": "pontos fortes",
+        "tags": [
+          "cliftonstrengths",
+          "escolhas",
+          "carreira",
+          "orientação"
+        ],
+        "nível": "intermediario"
+      },
+      "fonte": "Gallup – CliftonStrengths; aplicação prática adaptada para orientação vocacional"
+    }
+  ]
