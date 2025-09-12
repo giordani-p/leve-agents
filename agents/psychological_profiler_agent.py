@@ -1,12 +1,13 @@
-# agents/psychological_profiler_agent.py
+"""
+Agente Perfilador Psicológico - Leve Agents
+
+Analisa perfis psicológicos e comportamentais para orientação personalizada.
+Identifica motivações, estilos de aprendizado e necessidades de desenvolvimento.
+"""
 from crewai import Agent
 from models.llm import get_openai_llm
-#from models.llm import get_groq_llm, GroqModel
-from crewai_tools import DirectorySearchTool
 
-file_tool = DirectorySearchTool(directory="files/snapshots/") 
-
-#llm = get_groq_llm(model_name=GroqModel.GEMMA)
+# Configuração do LLM
 llm = get_openai_llm(model="gpt-4o")
 
 psychological_profiler_agent = Agent(

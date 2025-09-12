@@ -1,12 +1,16 @@
+"""
+Schema de saída do Especialista de Carreira - Leve Agents
+
+Define a estrutura de dados para respostas do agente de carreira,
+incluindo respostas práticas e recursos complementares.
+"""
 from typing import Literal, Optional, List
 from pydantic import BaseModel, Field, HttpUrl
 from pydantic.config import ConfigDict
 
 
 class ResourceItem(BaseModel):
-    """
-    Recurso opcional sugerido pelo agente para complementar a resposta.
-    """
+    """Recurso opcional sugerido pelo agente para complementar a resposta."""
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     title: str = Field(..., min_length=1, max_length=160)
@@ -15,9 +19,7 @@ class ResourceItem(BaseModel):
 
 
 class CareerOutput(BaseModel):
-    """
-    Contrato de saída do Agent 02 – Especialista de Carreira (career_agent).
-    """
+    """Contrato de saída do Especialista de Carreira."""
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     status: Literal["ok", "fora_do_escopo"]

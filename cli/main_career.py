@@ -1,16 +1,14 @@
-# cli/main_career.py
 """
-CLI do Especialista de Carreira (primeiro emprego)
-- Lê a pergunta do usuário e opcionalmente um snapshot de perfil
-- Executa o crew de carreira e imprime o resultado validado no terminal
-- Por padrão imprime de forma "amigável"; use --json para ver o objeto completo
+CLI do Especialista de Carreira - Leve Agents
+
+Fornece orientação profissional para primeiro emprego baseada em perguntas específicas.
+Suporta análise de perfil via snapshot e validação completa dos resultados.
 
 Exemplos:
   python -m cli.main_career -q "Como montar um currículo sem experiência?"
   python -m cli.main_career -q "Quais áreas posso trabalhar?" --snapshot-path files/snapshots/ana_001.json
   python -m cli.main_career -q "Como me preparar para entrevistas?" --json
 """
-
 from __future__ import annotations
 
 import argparse
@@ -20,15 +18,12 @@ import sys
 from pathlib import Path
 from typing import Optional, Tuple
 
-import agentops
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
-# Adiciona o diretório raiz ao path para permitir importações
+# Configuração de path para importações
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 load_dotenv()
-# agentops.init()
 
 from crew_config import career_coach_crew
 from schemas.career_input import CareerInput
@@ -36,16 +31,21 @@ from schemas.career_output import CareerOutput
 from validators.career_output_checks import run_all_checks
 from helpers.json_extractor import try_extract_json
 
+# Inicialização do AgentOps para monitoramento de custos
+import agentops
+if os.getenv("AGENTOPS_API_KEY"):
+    agentops.init()
+
 
 def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="career-cli",
-        description="Especialista de Carreira (primeiro emprego) — Leve",
+        description="Especialista em Primeiro Emprego — Leve",
     )
     parser.add_argument(
         "-q", "--question",
         required=True,
-        help="Dúvida de carreira do usuário (ex.: 'Como montar um currículo sem experiência?').",
+        help="Dúvida sobre execução prática para primeiro emprego (ex.: 'Como montar um currículo sem experiência?').",
     )
     parser.add_argument(
         "--snapshot-path",
@@ -139,7 +139,7 @@ def _load_snapshot_from_file(snapshot_path: str) -> Optional[dict]:
 
 def _print_pretty(output: CareerOutput) -> None:
     """Imprime o resultado de forma amigável."""
-    print("\n🎯 Resposta do Especialista de Carreira")
+    print("\n🎯 Resposta do Especialista em Primeiro Emprego")
     print("=" * 50)
     
     if hasattr(output, 'advice') and output.advice:

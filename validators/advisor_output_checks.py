@@ -43,9 +43,9 @@ def parse_and_normalize(raw_json: dict) -> Tuple[Optional[OutputAdvisor], List[s
         return None, errors
 
     # Normalizações leves (semântica de apresentação)
-    # 1) Aparar espaços em summary e next_steps
+    # 1) Aparar espaços em summary e general_next_steps
     contract.summary = contract.summary.strip()
-    contract.next_steps = [s.strip() for s in contract.next_steps]
+    contract.general_next_steps = [s.strip() for s in contract.general_next_steps]
 
     # 2) Em options: aparar espaços e manter modality como enum
     normalized_options: List[Option] = []
@@ -53,15 +53,18 @@ def parse_and_normalize(raw_json: dict) -> Tuple[Optional[OutputAdvisor], List[s
         normalized_options.append(
             Option(
                 rank=opt.rank,
-                course_name=opt.course_name.strip(),
-                institution=opt.institution.strip(),
+                type=opt.type,
+                title=opt.title.strip(),
+                institution=opt.institution.strip() if opt.institution else None,
                 modality=opt.modality,  # já é Enum; não normalizamos aqui
-                duration=opt.duration.strip(),
+                duration=opt.duration.strip() if opt.duration else None,
                 prerequisites=opt.prerequisites.strip(),
                 cost_info=opt.cost_info.strip(),
                 scholarships_info=opt.scholarships_info.strip(),
-                official_url=str(opt.official_url),
-                why_top_pick=opt.why_top_pick.strip(),
+                official_url=opt.official_url,
+                why_recommended=opt.why_recommended.strip(),
+                next_steps=[s.strip() for s in opt.next_steps],
+                compatibility_score=opt.compatibility_score,
             )
         )
     contract.options = normalized_options
@@ -114,11 +117,11 @@ def check_summary_quality(contract: OutputAdvisor) -> List[str]:
 def check_next_steps_quality(contract: OutputAdvisor) -> List[str]:
     """Valida quantidade e tamanho de cada passo."""
     errors: List[str] = []
-    if not (2 <= len(contract.next_steps) <= 5):
-        errors.append("next_steps deve conter entre 2 e 5 itens.")
-    for i, step in enumerate(contract.next_steps, start=1):
+    if not (2 <= len(contract.general_next_steps) <= 5):
+        errors.append("general_next_steps deve conter entre 2 e 5 itens.")
+    for i, step in enumerate(contract.general_next_steps, start=1):
         if not (5 <= len(step) <= 140):
-            errors.append(f"next_steps[{i}] fora do tamanho esperado (5–140 chars).")
+            errors.append(f"general_next_steps[{i}] fora do tamanho esperado (5–140 chars).")
     return errors
 
 
@@ -229,15 +232,97 @@ def check_required_fields_presence(contract: OutputAdvisor) -> List[str]:
     """
     errors: List[str] = []
     for i, o in enumerate(contract.options, start=1):
-        if not o.course_name:
-            errors.append(f"options[{i}].course_name vazio.")
-        if not o.institution:
-            errors.append(f"options[{i}].institution vazio.")
-        if not o.duration:
-            errors.append(f"options[{i}].duration vazio.")
-        if not o.why_top_pick:
-            errors.append(f"options[{i}].why_top_pick vazio.")
+        if not o.title:
+            errors.append(f"options[{i}].title vazio.")
+        if not o.why_recommended:
+            errors.append(f"options[{i}].why_recommended vazio.")
+        if not o.next_steps:
+            errors.append(f"options[{i}].next_steps vazio.")
     return errors
+
+
+def check_profile_compatibility(contract: OutputAdvisor, snapshot_file: Optional[str]) -> List[str]:
+    """
+    Valida se as recomendações são compatíveis com o perfil do jovem.
+    """
+    errors: List[str] = []
+    
+    if not snapshot_file:
+        return errors
+    
+    # Aqui você poderia implementar lógica específica para validar compatibilidade
+    # Por exemplo, verificar se cursos caros são recomendados para perfis de baixa renda
+    # ou se cursos presenciais são recomendados para perfis com barreiras geográficas
+    
+    return errors
+
+
+def check_recommendation_diversity(contract: OutputAdvisor) -> List[str]:
+    """
+    Verifica se há diversidade nos tipos de recomendação.
+    """
+    warnings: List[str] = []
+    
+    if len(contract.options) < 2:
+        return warnings
+    
+    types = [o.type for o in contract.options]
+    unique_types = set(types)
+    
+    if len(unique_types) == 1:
+        warnings.append("Todas as recomendações são do mesmo tipo. Considere diversificar.")
+    
+    return warnings
+
+
+def check_compatibility_scores(contract: OutputAdvisor) -> List[str]:
+    """
+    Valida se os scores de compatibilidade são realistas.
+    """
+    warnings: List[str] = []
+    
+    for i, o in enumerate(contract.options, start=1):
+        if o.compatibility_score < 3:
+            warnings.append(f"Opção {i} tem score de compatibilidade muito baixo ({o.compatibility_score}/10).")
+        if o.compatibility_score > 9:
+            warnings.append(f"Opção {i} tem score de compatibilidade muito alto ({o.compatibility_score}/10).")
+    
+    return warnings
+
+
+def check_focus_alignment(contract: OutputAdvisor, foco_especifico: Optional[str]) -> List[str]:
+    """
+    Verifica se as recomendações estão alinhadas com o foco específico.
+    """
+    warnings: List[str] = []
+    
+    if not foco_especifico:
+        return warnings
+    
+    foco = foco_especifico.lower()
+    
+    # Mapear foco para tipos de recomendação esperados
+    focus_mapping = {
+        "primeiro emprego": ["curso_tecnico", "curso_livre", "certificacao", "trabalho_manual"],
+        "mudança de carreira": ["curso_graduacao", "especializacao", "certificacao"],
+        "sobrevivência básica": ["trabalho_manual", "orientacao_basica", "apoio_psicologico"],
+        "empreendedorismo": ["empreendedorismo", "curso_livre", "certificacao"],
+        "carreira artística": ["carreira_artistica", "curso_livre", "empreendedorismo"]
+    }
+    
+    expected_types = focus_mapping.get(foco, [])
+    if not expected_types:
+        return warnings
+    
+    actual_types = [o.type for o in contract.options]
+    matches = sum(1 for t in actual_types if t in expected_types)
+    
+    if matches == 0:
+        warnings.append(f"Nenhuma recomendação alinhada com o foco '{foco_especifico}'.")
+    elif matches < len(contract.options) // 2:
+        warnings.append(f"Poucas recomendações alinhadas com o foco '{foco_especifico}'.")
+    
+    return warnings
 
 
 # ---------------------------
@@ -247,6 +332,8 @@ def check_required_fields_presence(contract: OutputAdvisor) -> List[str]:
 def validate_output_contract(
     raw_json: dict,
     preferencia: Optional[str] = None,
+    snapshot_file: Optional[str] = None,
+    foco_especifico: Optional[str] = None,
     http_check: bool = False,
 ) -> ValidationResult:
     """
@@ -276,8 +363,12 @@ def validate_output_contract(
     errors.extend(check_sources_basic(contract))
     errors.extend(check_required_fields_presence(contract))
     errors.extend(check_modality_against_preference(contract, preferencia))
+    errors.extend(check_profile_compatibility(contract, snapshot_file))
 
     warnings.extend(check_rank_coverage(contract))
+    warnings.extend(check_recommendation_diversity(contract))
+    warnings.extend(check_compatibility_scores(contract))
+    warnings.extend(check_focus_alignment(contract, foco_especifico))
 
     url_errors: List[str] = []
     status_map: Dict[str, int] = {}

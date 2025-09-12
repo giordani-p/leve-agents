@@ -1,38 +1,69 @@
+"""
+Configuração de LLMs para o projeto Leve Agents.
+Suporta OpenAI e Groq com monitoramento automático via AgentOps.
+"""
 import os
 from enum import Enum
 from langchain_openai import ChatOpenAI
+from .llm_config import get_llm_config, validate_llm_config
 
-# Enum para listar os modelos disponíveis via Groq
+# Inicialização do AgentOps para monitoramento de custos
+import agentops
+if os.getenv("AGENTOPS_API_KEY"):
+    agentops.init()
+
 class GroqModel(str, Enum):
-   # MISTRAL_SABA = "groq/mistral-saba-24b" 
-    LLAMA3_8B = "groq/llama3-8b-8192"
-    LLAMA3_70B = "groq/llama3-70b-8192"
+    """Modelos disponíveis via Groq API."""
+    LLAMA3_8B = "groq/llama-3.1-8b-instant"
+    LLAMA3_70B = "groq/llama-3.3-70b-versatile"
     GEMMA = "groq/gemma2-9b-it"
-    LLAMA2_70B = "groq/llama-3.3-70b-versatile"
+    GROQ_COMPOUND = "groq/compound"
+    GROQ_COMPOUND_MINI = "groq/compound-mini"
+    LLAMA2_70B = "llama-3.3-70b-versatile"  # Compatibilidade
 
-# Função que retorna um LLM configurado para usar a Groq
-def get_groq_llm(model_name: GroqModel = GroqModel.GEMMA) -> ChatOpenAI:
+def get_groq_llm(model_name: GroqModel = None) -> ChatOpenAI:
+    """Retorna um LLM configurado para usar a Groq API."""
     api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
-        raise ValueError("GROQ_API_KEY não encontrada nas variáveis de ambiente (.env)")
+        raise ValueError("GROQ_API_KEY não encontrada nas variáveis de ambiente")
+
+    config = get_llm_config()
+    validate_llm_config(config)
+    
+    model_to_use = model_name if model_name else config.groq_default_model
 
     return ChatOpenAI(
-        model=model_name,
+        model=model_to_use,
         api_key=api_key,
         base_url="https://api.groq.com/openai/v1",
-        temperature=0.7,
-        max_tokens=2500
+        temperature=config.temperature,
+        max_tokens=config.max_tokens,
+        timeout=config.timeout,
+        max_retries=config.max_retries,
+        top_p=config.top_p,
+        frequency_penalty=config.frequency_penalty,
+        presence_penalty=config.presence_penalty
     )
 
-# Função que retorna um LLM configurado para usar a OpenAI
-def get_openai_llm(model: str = "gpt-4o") -> ChatOpenAI:
+def get_openai_llm(model: str = None) -> ChatOpenAI:
+    """Retorna um LLM configurado para usar a OpenAI API."""
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
-        raise ValueError("OPENAI_API_KEY não encontrada nas variáveis de ambiente (.env)")
+        raise ValueError("OPENAI_API_KEY não encontrada nas variáveis de ambiente")
+
+    config = get_llm_config()
+    validate_llm_config(config)
+    
+    model_to_use = model if model else config.openai_default_model
 
     return ChatOpenAI(
         api_key=api_key,
-        model=model,
-        temperature=0.7,
-        max_tokens=2000
+        model=model_to_use,
+        temperature=config.temperature,
+        max_tokens=config.max_tokens,
+        timeout=config.timeout,
+        max_retries=config.max_retries,
+        top_p=config.top_p,
+        frequency_penalty=config.frequency_penalty,
+        presence_penalty=config.presence_penalty
     )

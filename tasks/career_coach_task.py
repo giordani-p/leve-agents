@@ -1,13 +1,21 @@
+"""
+Task do Especialista de Carreira - Leve Agents
+
+Define a tarefa de execução prática para conseguir primeiro emprego,
+focando em ações concretas e acionáveis para jovens.
+"""
 from crewai import Task
 from agents.career_coach_agent import career_coach_agent
 
 career_coach_task = Task(
-    name="Orientações de carreira personalizadas (primeiro emprego)",
+    name="Execução Prática para Primeiro Emprego",
     description=(
-        "Responda à pergunta do usuário ({question}) considerando as informações do perfil do usuário: {profile_snapshot}. "
-        "É fundamental que a resposta seja **altamente personalizada e contextualizada ao perfil do usuário**. Identifique as âncoras relevantes do perfil (como área de interesse, contexto de vida ou objetivos) e use-as para moldar a resposta. **Valide a experiência ou o sentimento do usuário** antes de dar o conselho, mostrando que você compreende a situação. Aja como um mentor, mostrando ao jovem como as experiências que ele já tem são valiosas para a carreira que ele busca. "
-        "Ao dar conselhos, faça a 'ponte' entre a experiência do usuário e as habilidades de mercado. Mostre como o trabalho em um ambiente não formal pode ter desenvolvido **habilidades comportamentais** como proatividade e resiliência. "
-        "A resposta detalhada deve ser organizada de forma didática, usando **títulos, listas e exemplos práticos**. O tom deve ser de reconhecimento e apoio."
+        "Responda à pergunta do usuário ({question}) com foco em execução prática para conseguir primeiro emprego, considerando as informações do perfil: {profile_snapshot}. "
+        "É fundamental que a resposta seja **altamente prática e acionável**, fornecendo passos concretos que o jovem pode executar imediatamente. "
+        "Identifique as âncoras relevantes do perfil (área de interesse, habilidades, contexto) e use-as para personalizar as ações práticas. "
+        "**Foque em 'como fazer' ao invés de 'o que fazer'** - forneça instruções específicas, exemplos práticos e recursos concretos. "
+        "A resposta deve ser organizada de forma didática, usando **títulos, listas numeradas e exemplos práticos**. "
+        "O tom deve ser encorajador e prático, mostrando que conseguir primeiro emprego é possível com as ações certas."
     ),
     expected_output=(
         "Retorne EXCLUSIVAMENTE um JSON válido, sem nenhum texto antes ou depois. "

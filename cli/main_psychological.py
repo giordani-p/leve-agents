@@ -1,15 +1,13 @@
-# cli/main_psychological_profiler.py
 """
-CLI do Perfilador Educacional
-- Lê dados de perfil do usuário (texto livre ou arquivo)
-- Executa o crew de perfilagem e imprime o resultado validado no terminal
-- Por padrão imprime de forma "amigável"; use --json para ver o objeto completo
+CLI do Perfilador Psicológico - Leve Agents
+
+Analisa perfis psicológicos e educacionais baseados em dados fornecidos.
+Suporta entrada via texto livre ou arquivo JSON e validação completa dos resultados.
 
 Exemplos:
-  python -m cli.main_profiler -d "Escolaridade: Ensino médio completo..."
-  python -m cli.main_profiler --data-file files/snapshots/carlos_001.json --json
+  python -m cli.main_psychological -d "Escolaridade: Ensino médio completo..."
+  python -m cli.main_psychological --data-file files/snapshots/carlos_001.json --json
 """
-
 from __future__ import annotations
 
 import argparse
@@ -21,16 +19,19 @@ from typing import Optional
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
-# Adiciona o diretório raiz ao path para permitir importações
+# Configuração de path para importações
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Carrega variáveis de ambiente
 load_dotenv()
 
 from crew_config import psychological_profiler_crew
 from schemas.psychological_output import PsychologicalOutput
 from validators.psychological_output_checks import validate_psychological_output
 from helpers.json_extractor import try_extract_json
+
+# Inicialização do AgentOps para monitoramento de custos
+import agentops
+if os.getenv("AGENTOPS_API_KEY"):
+    agentops.init()
 
 
 def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:

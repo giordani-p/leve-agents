@@ -1,4 +1,9 @@
-# tasks/psychological_profiler_task.py
+"""
+Task do Perfilador Psicológico - Leve Agents
+
+Define a tarefa de análise psicológica e comportamental,
+focando em insights profundos para orientação personalizada.
+"""
 from crewai import Task
 from agents.psychological_profiler_agent import psychological_profiler_agent
 
@@ -9,8 +14,9 @@ psychological_profiler_task = Task(
         "Foque em: motivações, valores, estilos comportamentais, preferências de trabalho e necessidades de desenvolvimento. "
         "Use DISC e CliftonStrengths do snapshot como base, integrando-os de forma coerente. "
         "Seja conciso e focado nos aspectos mais relevantes para orientação personalizada. "
+        "Use a ferramenta de busca web quando necessário para obter informações atualizadas sobre: "
+        "metodologias psicológicas, pesquisas comportamentais, tendências em desenvolvimento humano e orientação vocacional."
     ),
-
     expected_output=(
         "Retorne APENAS um JSON com os seguintes campos:\n\n"
         "- perfil_psicologico: string. Resumo integrado do perfil psicológico\n"
