@@ -1,5 +1,5 @@
 # schemas/trail_candidate.py
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Iterable
 from uuid import UUID
 from pydantic import BaseModel, Field
 
@@ -10,18 +10,20 @@ Status = Literal["Published", "Draft", "Archived"]
 class TrailCandidate(BaseModel):
     """
     Representa um item do catálogo de trilhas já normalizado para uso no
-    Sistema de Recomendação (CLI).
+    Sistema de Recomendação.
 
-    Observações:
-    - publicId é obrigatório e serve como identificador essencial.
-    - slug é opcional (para exibição/URLs quando fizer sentido).
-    - status é mantido apenas para auditoria/checagens; o filtro por 'Published'
-      deve ser aplicado na etapa de seleção antes da recomendação.
+    Notas:
+    - publicId é obrigatório (UUID).
+    - title é requerido; se ausente na origem, tenta usar subtitle; caso contrário fica "" (evitar, mas não quebra).
+    - combined_text concatena campos relevantes e será usado para embeddings (MPNet).
     """
     publicId: UUID = Field(..., description="Identificador público obrigatório (UUID).")
     slug: Optional[str] = Field(default=None, description="Slug da trilha (opcional).")
     title: str
+    subtitle: Optional[str] = Field(default=None, description="Subtítulo da trilha (opcional).")
     tags: List[str] = Field(default_factory=list)
+    topics: List[str] = Field(default_factory=list, description="Tópicos/temas da trilha.")
+    area: Optional[str] = Field(default=None, description="Área/domínio da trilha.")
     difficulty: Optional[Difficulty] = Field(default=None)
     description: str = Field(default="")
     status: Optional[Status] = Field(default=None, description="Status original no catálogo (auditoria).")
@@ -34,55 +36,115 @@ class TrailCandidate(BaseModel):
     def from_source(cls, item: dict) -> "TrailCandidate":
         """
         Normaliza um item bruto do JSON de origem para o contrato TrailCandidate.
+        - Dedupe/limpeza de tags e campos textuais.
+        - Mapeamento robusto de difficulty/status (PT/EN).
+        - Montagem controlada do combined_text.
         """
-        # Identificador essencial (UUID)
+        # --- Identificador essencial (UUID) ---
         public_id_raw = item.get("publicId") or item.get("id")
         if not public_id_raw:
             raise ValueError("publicId é obrigatório para construir TrailCandidate.")
         public_id = UUID(str(public_id_raw))
 
-        # Campos básicos
-        slug = item.get("slug") or None
-        title = item.get("title") or ""
-        tags = item.get("tags") if isinstance(item.get("tags"), list) else []
+        # --- Campos básicos ---
+        slug = _clean_str(item.get("slug"))
+        title = _clean_str(item.get("title"))
+        subtitle = _clean_str(item.get("subtitle"))
 
-        # Difficulty normalizada
-        raw_diff = item.get("difficulty")
-        difficulty: Optional[Difficulty] = None
-        if isinstance(raw_diff, str):
-            norm = raw_diff.strip().lower()
-            if norm in {"beginner", "iniciante"}:
-                difficulty = "Beginner"
-            elif norm in {"intermediate", "intermediário", "intermediario"}:
-                difficulty = "Intermediate"
-            elif norm in {"advanced", "avançado", "avancado"}:
-                difficulty = "Advanced"
+        if not title and subtitle:
+            # fallback: usa subtitle como título se title estiver vazio
+            title = subtitle
 
-        # Descrição e status (para auditoria)
-        description = item.get("description") or item.get("summary") or ""
-        raw_status = item.get("status")
-        status: Optional[Status] = None
-        if isinstance(raw_status, str):
-            s = raw_status.strip().lower()
-            if s == "published":
-                status = "Published"
-            elif s == "draft":
-                status = "Draft"
-            elif s == "archived":
-                status = "Archived"
+        # --- Tags: aceita lista heterogênea, remove vazios, dedupe preservando ordem ---
+        tags_raw = item.get("tags")
+        tags_list = _normalize_tags(tags_raw)
+        
+        # --- Topics: similar às tags, mas campo separado ---
+        topics_raw = item.get("topics")
+        topics_list = _normalize_tags(topics_raw)
+        
+        # --- Area/domínio ---
+        area = _clean_str(item.get("area"))
 
-        # Texto combinado (inclui subtítulo, se houver)
-        subtitle = item.get("subtitle") or ""
-        combined_parts = [title, subtitle] + tags + [description]
-        combined_text = " | ".join([str(p) for p in combined_parts if p])
+        # --- Difficulty normalizada (PT/EN) ---
+        difficulty = _map_difficulty(item.get("difficulty"))
+
+        # --- Descrição e status (para auditoria) ---
+        description = _clean_str(item.get("description") or item.get("summary"))
+        status = _map_status(item.get("status"))
+
+        # --- Texto combinado (título | subtítulo | #tags | descrição) ---
+        tags_str = " ".join(f"#{t}" for t in tags_list) if tags_list else ""
+        combined_parts = [title, subtitle if subtitle and subtitle != title else "", tags_str, description]
+        combined_text = " | ".join([p for p in combined_parts if p])
 
         return cls(
             publicId=public_id,
-            slug=slug,
-            title=title,
-            tags=tags,
+            slug=slug or None,
+            title=title or "",
+            subtitle=subtitle or None,
+            tags=tags_list,
+            topics=topics_list,
+            area=area or None,
             difficulty=difficulty,
-            description=description,
+            description=description or "",
             status=status,
             combined_text=combined_text,
         )
+
+
+# ----------------------------
+# Helpers de normalização
+# ----------------------------
+def _clean_str(val) -> str:
+    if val is None:
+        return ""
+    s = str(val).strip()
+    # colapsa espaços múltiplos
+    return " ".join(s.split())
+
+
+def _normalize_tags(val) -> List[str]:
+    if not val:
+        return []
+    out: List[str] = []
+    seen = set()
+    # aceita lista heterogênea
+    iterable: Iterable = val if isinstance(val, (list, tuple)) else [val]
+    for x in iterable:
+        t = _clean_str(x)
+        if not t:
+            continue
+        # chave de dedupe case-insensitive
+        key = t.casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(t)  # preserva grafia original para UI
+    return out
+
+
+def _map_difficulty(raw) -> Optional[Difficulty]:
+    if not isinstance(raw, str):
+        return None
+    norm = raw.strip().casefold()
+    if norm in {"beginner", "iniciante", "iniciantes", "basico", "básico", "do zero"}:
+        return "Beginner"
+    if norm in {"intermediate", "intermediario", "intermediário", "medio", "médio"}:
+        return "Intermediate"
+    if norm in {"advanced", "avancado", "avançado"}:
+        return "Advanced"
+    return None
+
+
+def _map_status(raw) -> Optional[Status]:
+    if not isinstance(raw, str):
+        return None
+    s = raw.strip().casefold()
+    if s == "published":
+        return "Published"
+    if s == "draft":
+        return "Draft"
+    if s == "archived":
+        return "Archived"
+    return None

@@ -5,22 +5,18 @@ Cliente HTTP para leitura do catálogo de trilhas a partir do backend da Leve.
 Responsabilidades:
 - Buscar trilhas publicadas via /api/trails (com suporte a ?status=Published).
 - (Opcional) Buscar detalhe de uma trilha via /api/trails/{publicId}.
-- Implementar timeouts granulares, retry com backoff e tratamento de erros.
+- Implementar timeouts granulares, retry com backoff (com jitter) e tratamento de erros.
 - Retornar dados *brutos* (list[dict] / dict), deixando a normalização para TrailCandidate.from_source().
 
-Dependências:
-- httpx (cliente HTTP moderno com timeouts granulares e HTTP/2).
-- Este módulo NÃO normaliza; apenas coleta os dados da API.
-
 Observações:
-- Defesa em profundidade: mesmo pedindo Published no cliente, mantenha o filtro final
-  por status na etapa de seleção/ranker (ver RecoConfig.ALLOWED_STATUS).
-- Se /api/trails passar a paginar, há suporte básico a iteração até um limite (API_MAX_PAGES).
+- Mesmo pedindo Published, o filtro final por status é feito mais à frente (config.ALLOWED_STATUS).
+- Se /api/trails paginar, há suporte básico a iteração até API_MAX_PAGES (items/nextPageToken).
 """
 
 from __future__ import annotations
 
 import time
+import random
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 from uuid import UUID
 
@@ -32,7 +28,6 @@ from .config import RecoConfig
 # -----------------------------
 # Helpers internos
 # -----------------------------
-
 def _build_timeout(cfg: RecoConfig) -> httpx.Timeout:
     """Monta timeouts granulares a partir do RecoConfig."""
     return httpx.Timeout(
@@ -43,15 +38,26 @@ def _build_timeout(cfg: RecoConfig) -> httpx.Timeout:
     )
 
 
+def _retry_delay(attempt_idx: int, base: float, retry_after: Optional[float]) -> float:
+    """
+    Calcula o delay de retry:
+    - Se houver Retry-After (segundos), prioriza.
+    - Senão: backoff exponencial com jitter (±20%).
+    """
+    if retry_after is not None and retry_after > 0:
+        return float(retry_after)
+    delay = base * (2 ** attempt_idx)
+    jitter = delay * random.uniform(-0.2, 0.2)
+    return max(0.0, delay + jitter)
+
+
 def _should_retry(status_code: Optional[int], exc: Optional[BaseException]) -> bool:
     """
-    Define se vale a pena tentar novamente a requisição.
-    - Retries em falhas transitórias de rede (ConnectError, ReadError, etc.)
-    - Retries em HTTP 429, 408 e 5xx.
-    - 4xx (exceto 408/429) normalmente não devem ser re-tentados.
+    Define se vale tentar novamente:
+    - Erros de rede/transientes do httpx
+    - HTTP 408, 429 e 5xx
     """
     if exc is not None:
-        # Erros de rede/transientes típicos do httpx
         return isinstance(
             exc,
             (
@@ -63,26 +69,13 @@ def _should_retry(status_code: Optional[int], exc: Optional[BaseException]) -> b
                 httpx.WriteError,
             ),
         )
-
     if status_code is None:
         return False
-
     if status_code in (408, 429):
         return True
     if 500 <= status_code <= 599:
         return True
-
     return False
-
-
-def _sleep_backoff(attempt_idx: int, base: float) -> None:
-    """
-    Espera com backoff exponencial simples.
-    attempt_idx: 0, 1, 2, ...
-    tempo = base * (2 ** attempt_idx)
-    """
-    delay = base * (2 ** attempt_idx)
-    time.sleep(delay)
 
 
 def _join_url(base: str, path: str) -> str:
@@ -91,39 +84,67 @@ def _join_url(base: str, path: str) -> str:
     return f"{base}/{path}"
 
 
+def _ensure_list_of_dicts(data: Iterable[Any]) -> List[Dict[str, Any]]:
+    """Valida que 'data' é uma sequência de dicts e retorna lista nova."""
+    out: List[Dict[str, Any]] = []
+    for i, item in enumerate(data):
+        if not isinstance(item, dict):
+            raise ValueError(f"Entrada inválida na lista de trilhas (índice {i}): esperado objeto JSON (dict).")
+        out.append(item)
+    return out
+
+
 # -----------------------------
 # Cliente HTTP (context manager)
 # -----------------------------
-
 class TrailsApiClient:
     """
-    Encapsula o httpx.Client com configurações de timeout. Reutiliza conexões (pool).
+    Encapsula o httpx.Client com timeout, headers e retry/backoff.
+    Reutiliza conexões (pool).
     """
 
     def __init__(self, cfg: RecoConfig) -> None:
         self._cfg = cfg
+
+        # Cabeçalhos padrão (User-Agent útil p/ observabilidade no backend)
+        headers = {
+            "User-Agent": f"LeveReco/1.0 ({getattr(cfg, 'MODEL_VERSION', 'unspecified')}; {getattr(cfg, 'INDEX_TRILHAS', 'trilhas_mpnet_v1')})",
+            "Accept": "application/json",
+        }
+        # Header opcional de API key, se existir na config
+        api_key = getattr(cfg, "API_KEY", None)
+        if api_key:
+            headers["X-API-Key"] = str(api_key)
+
         self._client = httpx.Client(
-            base_url=cfg.TRAILS_API_BASE,
+            base_url=cfg.TRAILS_API_BASE.rstrip("/"),
             timeout=_build_timeout(cfg),
-            http2=True,  # opcional; httpx negocia HTTP/2 se disponível
+            headers=headers,
+            http2=True,
         )
 
     def close(self) -> None:
         self._client.close()
 
+    # -----------------------------
+    # Baixo nível (request + retry)
+    # -----------------------------
     def _request_with_retry(
         self,
         method: str,
-        url: str,
+        path: str,
         *,
         params: Optional[Dict[str, Any]] = None,
     ) -> httpx.Response:
         """
         Faz uma requisição com tentativas adicionais em caso de erro transitório.
+        Respeita Retry-After quando presente.
         """
         attempts = 1 + max(0, self._cfg.HTTP_RETRIES)
         last_exc: Optional[BaseException] = None
         last_status: Optional[int] = None
+
+        url = _join_url(self._cfg.TRAILS_API_BASE, path)
 
         for i in range(attempts):
             try:
@@ -131,10 +152,17 @@ class TrailsApiClient:
                 last_status = resp.status_code
 
                 if _should_retry(last_status, None) and i < attempts - 1:
-                    _sleep_backoff(i, self._cfg.HTTP_BACKOFF_BASE)
+                    retry_after_hdr = resp.headers.get("Retry-After")
+                    retry_after = None
+                    if retry_after_hdr:
+                        try:
+                            retry_after = float(retry_after_hdr)
+                        except Exception:
+                            retry_after = None
+                    time.sleep(_retry_delay(i, self._cfg.HTTP_BACKOFF_BASE, retry_after))
                     continue
 
-                # Erros 4xx/5xx não-retentáveis explodem aqui:
+                # Fora dos casos de retry, dispara erro se 4xx/5xx
                 resp.raise_for_status()
                 return resp
 
@@ -142,7 +170,14 @@ class TrailsApiClient:
                 last_exc = e
                 last_status = e.response.status_code
                 if _should_retry(last_status, None) and i < attempts - 1:
-                    _sleep_backoff(i, self._cfg.HTTP_BACKOFF_BASE)
+                    retry_after_hdr = e.response.headers.get("Retry-After")
+                    retry_after = None
+                    if retry_after_hdr:
+                        try:
+                            retry_after = float(retry_after_hdr)
+                        except Exception:
+                            retry_after = None
+                    time.sleep(_retry_delay(i, self._cfg.HTTP_BACKOFF_BASE, retry_after))
                     continue
                 raise
 
@@ -150,11 +185,10 @@ class TrailsApiClient:
                     httpx.RemoteProtocolError, httpx.PoolTimeout, httpx.WriteError) as e:
                 last_exc = e
                 if _should_retry(None, e) and i < attempts - 1:
-                    _sleep_backoff(i, self._cfg.HTTP_BACKOFF_BASE)
+                    time.sleep(_retry_delay(i, self._cfg.HTTP_BACKOFF_BASE, None))
                     continue
                 raise
 
-        # Se chegou aqui, algo deu errado sem raise anterior; relança a última exceção conhecida
         if last_exc:
             raise last_exc
         raise RuntimeError("Falha desconhecida ao executar requisição HTTP.")
@@ -162,56 +196,53 @@ class TrailsApiClient:
     # -----------------------------
     # Endpoints
     # -----------------------------
-
     def fetch_trails(self) -> List[Dict[str, Any]]:
         """
         Busca lista de trilhas em /api/trails.
         - Se API_FILTER_PUBLISHED=True, envia ?status=Published.
-        - Suporte básico a paginação caso a API passe a devolver { items, nextPageToken }.
+        - Usa API_PAGE_SIZE_HINT como 'limit' (se configurado).
+        - Suporte básico a paginação: { items, nextPageToken }.
         - Retorna SEM normalizar (lista de dicts).
         """
         path = "/api/trails"
         params: Dict[str, Any] = {}
         if self._cfg.API_FILTER_PUBLISHED:
             params["status"] = "Published"
+        if getattr(self._cfg, "API_PAGE_SIZE_HINT", None):
+            params["limit"] = int(self._cfg.API_PAGE_SIZE_HINT)
 
-        # Primeira página
         resp = self._request_with_retry("GET", path, params=params)
-        data = resp.json()
+        data = _ensure_json(resp)
 
-        # Caso tradicional: API retorna uma lista direta
+        # Caso tradicional: lista direta
         if isinstance(data, list):
             return _ensure_list_of_dicts(data)
 
-        # Suporte básico a paginação futura: { "items": [...], "nextPageToken": "..." }
+        # Paginação futura: { "items": [...], "nextPageToken": "..." }
         if isinstance(data, dict) and "items" in data:
             items: List[Dict[str, Any]] = _ensure_list_of_dicts(data.get("items", []))
             next_token = data.get("nextPageToken")
             pages = 1
 
-            # Itera enquanto houver token e não ultrapassar o limite configurado
             while next_token and pages < self._cfg.API_MAX_PAGES:
-                params_with_token = dict(params)
-                params_with_token["pageToken"] = next_token
-                resp = self._request_with_retry("GET", path, params=params_with_token)
-                page_data = resp.json()
-                page_items = []
+                page_params = dict(params)
+                page_params["pageToken"] = next_token
+                resp = self._request_with_retry("GET", path, params=page_params)
+                page_data = _ensure_json(resp)
+
                 if isinstance(page_data, list):
-                    page_items = _ensure_list_of_dicts(page_data)
+                    items.extend(_ensure_list_of_dicts(page_data))
                     next_token = None
                 elif isinstance(page_data, dict):
-                    page_items = _ensure_list_of_dicts(page_data.get("items", []))
+                    items.extend(_ensure_list_of_dicts(page_data.get("items", [])))
                     next_token = page_data.get("nextPageToken")
                 else:
-                    # Resposta inesperada: interrompe paginação
                     next_token = None
 
-                items.extend(page_items)
                 pages += 1
 
             return items
 
-        # Formato inesperado
         raise ValueError("Resposta inesperada de /api/trails: esperado list ou dict com chave 'items'.")
 
     def fetch_trail_detail(self, public_id: UUID | str) -> Optional[Dict[str, Any]]:
@@ -225,12 +256,11 @@ class TrailsApiClient:
         try:
             resp = self._request_with_retry("GET", path)
         except httpx.HTTPStatusError as e:
-            # 404 → None, demais erros propagam
             if e.response.status_code == 404:
                 return None
             raise
 
-        data = resp.json()
+        data = _ensure_json(resp)
         if not isinstance(data, dict):
             raise ValueError("Resposta inesperada de /api/trails/{publicId}: esperado objeto JSON (dict).")
         return data
@@ -239,14 +269,8 @@ class TrailsApiClient:
 # -----------------------------
 # API de alto nível (funções)
 # -----------------------------
-
 def fetch_trails(cfg: RecoConfig) -> List[Dict[str, Any]]:
-    """
-    Função de conveniência para uso fora da classe.
-    Exemplo:
-        from reco.data_loader_api import fetch_trails
-        raw_trails = fetch_trails(config)
-    """
+    """Convenience para uso fora da classe."""
     client = TrailsApiClient(cfg)
     try:
         return client.fetch_trails()
@@ -265,15 +289,18 @@ def fetch_trail_detail(cfg: RecoConfig, public_id: UUID | str) -> Optional[Dict[
 # -----------------------------
 # Utilidades
 # -----------------------------
-
-def _ensure_list_of_dicts(data: Iterable[Any]) -> List[Dict[str, Any]]:
-    """
-    Valida que 'data' é uma sequência de objetos JSON (dicts).
-    Retorna uma nova lista de dicts.
-    """
-    out: List[Dict[str, Any]] = []
-    for i, item in enumerate(data):
-        if not isinstance(item, dict):
-            raise ValueError(f"Entrada inválida na lista de trilhas (índice {i}): esperado objeto JSON (dict).")
-        out.append(item)
-    return out
+def _ensure_json(resp: httpx.Response) -> Any:
+    """Valida Content-Type e faz resp.json() com mensagem de erro clara."""
+    ctype = (resp.headers.get("Content-Type") or "").lower()
+    if "application/json" not in ctype and "+json" not in ctype:
+        # Ainda assim tenta decodificar para capturar payload de erro útil
+        try:
+            return resp.json()
+        except Exception:
+            text = (resp.text or "")[:500]
+            raise ValueError(f"Resposta não-JSON (status {resp.status_code}). Content-Type='{ctype}'. Trecho: {text!r}")
+    try:
+        return resp.json()
+    except Exception as e:
+        text = (resp.text or "")[:500]
+        raise ValueError(f"Falha ao decodificar JSON (status {resp.status_code}). Trecho: {text!r}") from e

@@ -1,35 +1,131 @@
 # reco/pipeline.py
 """
-Pipeline ponta a ponta do Sistema de Recomendação (CLI).
+Pipeline ponta a ponta — V4 / P1 Híbrido (BM25 + MPNet)
 
 Fluxo:
-1) Carrega snapshot (sempre via arquivo) e catálogo (via API ou arquivos, conforme config.SOURCE).
-2) Normaliza trilhas em TrailCandidate, deduplica e filtra por status permitido (Published).
-3) Monta a consulta a partir da user_question (+ pistas opcionais do snapshot/contexto).
-4) Calcula similaridade por conteúdo (TF-IDF + cosseno).
-5) Aplica regras de ranking (boosts, threshold, ordenação, dedupe e top-N).
-6) Gera 'why_match' em tom jovem para os itens do top-K.
-7) Constrói TrailOutput já com why_match preenchido e aplica validações de negócio.
+1) Carrega snapshot e catálogo (API ou arquivos).
+2) Normaliza em TrailCandidate, deduplica e filtra por status ("Published").
+3) Monta a consulta (pergunta + pistas do snapshot + contexto extra).
+4) Constrói índice vetorial em memória (NumPy) e, se híbrido, prepara BM25.
+5) Retrieval:
+   - Denso: DenseRetriever (MPNet) -> Top-K semântico
+   - Híbrido: HybridRetriever (BM25 + Denso) -> Top-K combinado
+6) Ranking com regras de negócio (boosts, threshold por coleção, dedupe, top-N).
+7) Gera why_match e constrói TrailOutput com validações de negócio.
+
+Observações:
+- Índice vetorial é construído on-the-fly para o catálogo carregado (piloto).
+  Em produção, preferir FAISS/pgvector/OpenSearch e job offline de embeddings.
+- O threshold usado aqui é o de "trilhas" (P1). Vagas entram no P2.
 """
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
 
 from reco.config import RecoConfig
 from reco.data_loader import load_snapshot, load_trails as load_trails_file
 from reco.data_loader_api import fetch_trails as fetch_trails_api
 from reco.normalizer import to_candidates, dedupe_by_public_id, filter_by_status
 from reco.query_builder import build as build_query
-from reco.indexer import score as index_scores
+
+# BM25 legado
+from reco.indexer import Indexer as BM25Indexer  # ajuste o nome se o seu arquivo expõe outro símbolo
+
+# Denso / Híbrido
+from reco.embeddings.embedding_provider import EmbeddingProvider
+from reco.index.vector_index import VectorIndex, VectorItem
+from reco.retriever.dense_retriever import DenseRetriever, DenseResult
+from reco.retriever.hybrid_retriever import HybridRetriever, HybridResult
+
 from reco.ranker import rank as rank_candidates, ScoredCandidate
 from reco.explainer import make_reason
 from reco.output_builder import build_output
 
 from schemas.trail_input import TrailInput
 from schemas.trail_output import TrailOutput
+from schemas.trail_candidate import TrailCandidate
 
 from validators.trail_output_checks import apply_business_rules
+
+
+# -----------------------------
+# Helpers internos
+# -----------------------------
+def _item_vector_text(cand: TrailCandidate) -> str:
+    """
+    Texto base para embeddings do item (trilha). Mantém coerência com query_builder.
+    """
+    parts = [
+        cand.title or "",
+        cand.subtitle or "",
+        cand.description or "",
+        " ".join(cand.topics or []),
+        " ".join(cand.tags or []),
+        cand.combined_text or "",
+    ]
+    return " | ".join(p for p in parts if p)
+
+
+def _build_vector_index_for_trilhas(
+    candidates: List[TrailCandidate],
+    cfg: RecoConfig,
+    *,
+    backend: str = "numpy",
+) -> Tuple[VectorIndex, EmbeddingProvider]:
+    """
+    Constrói um índice vetorial em memória (backend NumPy) para o catálogo atual.
+    Retorna (index, provider). Os vetores são L2-normalizados pelo provider.
+    """
+    provider = EmbeddingProvider.from_config(cfg)
+    index = VectorIndex.from_config(cfg, backend=backend, index_name=cfg.INDEX_TRILHAS)
+
+    # Gera embeddings em batch
+    texts = [_item_vector_text(c) for c in candidates]
+    embs = provider.embed_texts(texts, normalize=True, batch_size=cfg.EMBEDDING_BATCH_SIZE)
+
+    items = []
+    for cand, vec in zip(candidates, embs):
+        meta = {
+            "status": cand.status or "",
+            "difficulty": (cand.difficulty or "").lower(),
+            "area": cand.area or "",
+        }
+        items.append(VectorItem(id=str(cand.publicId), vector=vec.astype(np.float32, copy=False), metadata=meta))
+
+    index.upsert(items)
+    return index, provider
+
+
+def _bm25_callable_for_trilhas(
+    candidates: List[TrailCandidate],
+    cfg: RecoConfig,
+) -> tuple:
+    """
+    Prepara o BM25 indexer legado e retorna um callable:
+      bm25_search_topk(query_text, k) -> List[(id, score_bm25, meta)]
+    """
+    bm25 = BM25Indexer(cfg)  # seu indexer deve aceitar cfg; ajuste se necessário
+    bm25.fit_items(candidates)
+
+    def _searcher(query_text: str, k: int) -> List[tuple]:
+        # Espera-se que seu indexer retorne [(TrailCandidate, score)] ou [(id, score, meta)].
+        # Adaptamos para o formato do HybridRetriever.
+        raw = bm25.search_topk(query_text, k)
+        out: List[tuple] = []
+        if raw and isinstance(raw[0], tuple) and len(raw[0]) == 2 and isinstance(raw[0][0], TrailCandidate):
+            # Formato [(TrailCandidate, score)]
+            for cand, score in raw:
+                meta = {"status": cand.status or "", "difficulty": (cand.difficulty or "").lower(), "area": cand.area or ""}
+                out.append((str(cand.publicId), float(score), meta))
+        else:
+            # Caso seu indexer já devolva (id, score, meta)
+            out = [(str(r[0]), float(r[1]), r[2] if len(r) > 2 else {}) for r in raw]
+        return out
+
+    return bm25, _searcher
 
 
 def _map_reasons(
@@ -38,8 +134,7 @@ def _map_reasons(
     limit: int,
 ) -> Dict[str, str]:
     """
-    Gera e retorna um dicionário de razões (why_match) indexado por publicId (str).
-    Considera apenas os 'limit' primeiros itens.
+    Gera dicionário de razões (why_match) por publicId (str), considerando os 'limit' primeiros itens.
     """
     reasons: Dict[str, str] = {}
     topk = ranked[: max(1, min(limit, len(ranked)))]
@@ -49,6 +144,9 @@ def _map_reasons(
     return reasons
 
 
+# -----------------------------
+# Pipeline
+# -----------------------------
 def run(
     user_input: TrailInput,
     snapshot_path: str,
@@ -57,24 +155,14 @@ def run(
 ) -> TrailOutput:
     """
     Executa o pipeline completo e retorna um TrailOutput validado.
-
-    Parâmetros:
-      - user_input: TrailInput (user_question obrigatório; max_results ≤ 3).
-      - snapshot_path: caminho para o JSON de snapshot (ex.: files/snapshots/carlos_001.json).
-      - trails_path: caminho para o JSON de trilhas (ex.: files/trails/trails_examples.json).
-        *Observação*: quando SOURCE='api', este parâmetro é ignorado.
-      - cfg: RecoConfig (opcional; usa padrão se não fornecido).
     """
     cfg = cfg or RecoConfig()
 
     # 1) Carregar dados
     snapshot = load_snapshot(snapshot_path)
-
     if cfg.SOURCE == "api":
-        # Catálogo via API (httpx, timeout/retry definidos em config)
         raw_trails = fetch_trails_api(cfg)
     else:
-        # Catálogo via arquivos (mock local)
         raw_trails = load_trails_file(trails_path)
 
     # 2) Normalizar, deduplicar e filtrar Published
@@ -82,17 +170,16 @@ def run(
     candidates_all = dedupe_by_public_id(candidates_all)
     candidates = filter_by_status(candidates_all, cfg.ALLOWED_STATUS)
 
-    # Se nada publicado, retorna estado vazio controlado
     if not candidates:
         empty = build_output(
             ranked=[],
             query_text=user_input.user_question,
             max_results=user_input.max_results,
-            reasons_by_id={},  # sem razões porque não há itens
+            reasons_by_id={},
         )
         return apply_business_rules(empty)
 
-    # 3) Montar consulta (user_question + pistas opcionais do snapshot + contexto_extra)
+    # 3) Montar consulta (user_question + pistas do snapshot + contexto_extra)
     query_text = build_query(
         user_question=user_input.user_question,
         snapshot=snapshot,
@@ -100,21 +187,59 @@ def run(
         contexto_extra=user_input.contexto_extra,
     )
 
-    # 4) Similaridade por conteúdo (TF-IDF)
-    scored = index_scores(query_text=query_text, candidates=candidates, cfg=cfg)
+    # 4) Construir índice vetorial (piloto: em memória / NumPy)
+    vindex, prov = _build_vector_index_for_trilhas(candidates, cfg, backend="numpy")
 
-    # 5) Ranking com regras de negócio (boosts, threshold, dedupe, top-N)
+    # 5) Retrieval (denso ou híbrido)
+    dense = DenseRetriever.from_config(cfg, vector_index=vindex, embedding_provider=prov)
+
+    if cfg.USE_HYBRID:
+        # Prepara BM25 legado para o catálogo atual
+        bm25, bm25_search_topk = _bm25_callable_for_trilhas(candidates, cfg)
+
+        # Híbrido: une BM25 + Denso com normalização e blending
+        hybrid = HybridRetriever.from_config(cfg, dense_retriever=dense, bm25_search_topk=bm25_search_topk)
+        hybrid_res: List[HybridResult] = hybrid.search(
+            query_text=query_text,
+            k=cfg.TOP_K_DEFAULT,
+            filters={"status": "Published"} if cfg.ENFORCE_PUBLISHED else None,
+        )
+
+        # Adapta para entrada do ranker (híbrido)
+        scored_candidates = [
+            {
+                "candidate": next(c for c in candidates if str(c.publicId) == hr.id),
+                "score_combined": hr.score_combined,
+                "score_semantic": hr.score_semantic,
+                "score_bm25": hr.score_bm25,
+            }
+            for hr in hybrid_res
+        ]
+    else:
+        # Denso puro (P0/P1 com flag desligada)
+        dense_res: List[DenseResult] = dense.search(
+            query_text=query_text,
+            k=cfg.TOP_K_DEFAULT,
+            filters={"status": "Published"} if cfg.ENFORCE_PUBLISHED else None,
+        )
+        # Adapta para entrada do ranker (legado-like com score semântico)
+        # Aqui podemos passar como [(TrailCandidate, score)] que o ranker entende
+        id2cand = {str(c.publicId): c for c in candidates}
+        scored_candidates = [(id2cand[dr.id], dr.score_semantic) for dr in dense_res if dr.id in id2cand]
+
+    # 6) Ranking com regras de negócio (threshold por coleção: trilhas)
     ranked = rank_candidates(
-        scored_candidates=scored,
+        scored_candidates=scored_candidates,
         query_text=query_text,
         cfg=cfg,
+        collection="trilhas",
         max_results=user_input.max_results,
     )
 
-    # 6) Gerar razões (why_match) para o top-K
+    # 7) Gerar razões (why_match) para o top-K
     reasons_by_id = _map_reasons(ranked, query_text, limit=user_input.max_results)
 
-    # 7) Construir saída (status ok/fora_do_escopo) já com why_match preenchido
+    # 8) Construir saída (status ok/fora_do_escopo) já com why_match preenchido
     output = build_output(
         ranked=ranked,
         query_text=query_text,
@@ -122,6 +247,6 @@ def run(
         reasons_by_id=reasons_by_id,
     )
 
-    # 8) Aplicar regras de negócio/validação final
+    # 9) Aplicar regras de negócio/validação final
     final_output = apply_business_rules(output)
     return final_output

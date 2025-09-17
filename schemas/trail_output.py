@@ -10,22 +10,27 @@ class SuggestedTrail(BaseModel):
     Representa uma trilha sugerida.
     Agora usada em lista (1..3 itens) em TrailOutput.suggested_trails.
     """
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     publicId: Optional[UUID] = Field(
         default=None,
         description="Identificador público da trilha (UUID)."
     )
     slug: Optional[str] = Field(
         default=None,
-        description="Slug da trilha (obrigatório se não houver publicId)."
+        description="Slug da trilha (obrigatório se não houver publicId).",
+        max_length=200,
     )
     title: str = Field(
         ...,
         min_length=3,
+        max_length=140,
         description="Título da trilha."
     )
     why_match: str = Field(
         ...,
         min_length=5,
+        max_length=200,
         description="Breve explicação (tom cordial e jovem) do porquê essa trilha foi escolhida."
     )
     match_score: float = Field(
@@ -50,9 +55,12 @@ class WebFallback(BaseModel):
     este recurso não é utilizado e deve permanecer None em TrailOutput.
     Mantido por compatibilidade.
     """
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     title: str = Field(
         ...,
         min_length=3,
+        max_length=140,
         description="Título curto do conteúdo."
     )
     url: HttpUrl = Field(
@@ -62,15 +70,19 @@ class WebFallback(BaseModel):
     why_useful: str = Field(
         ...,
         min_length=5,
+        max_length=200,
         description="Por que esse conteúdo é útil para o jovem."
     )
 
 
 class QueryUnderstanding(BaseModel):
     """Entendimento resumido da questão do usuário (telemetria/logs)."""
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     tema: str = Field(
         ...,
         min_length=3,
+        max_length=48,
         description="Tema principal identificado na questão."
     )
     palavras_chave: List[str] = Field(
@@ -105,7 +117,6 @@ class TrailOutput(BaseModel):
         max_length=500,
         description="Resposta curta (2–4 linhas) à questão do jovem."
     )
-    # Principal mudança: agora é uma lista (1..3 itens), ordenada externamente por match_score desc.
     suggested_trails: Optional[List[SuggestedTrail]] = Field(
         default=None,
         description="Lista de trilhas sugeridas (1 a 3 itens)."
@@ -134,7 +145,6 @@ class TrailOutput(BaseModel):
         - status="fora_do_escopo": suggested_trails deve estar vazio/None; exige mensagem_padrao; web_fallback None.
         - Limita web_fallback a None no contexto atual.
         """
-        # Força web_fallback a None no contexto atual
         if self.web_fallback is not None and len(self.web_fallback) > 0:
             raise ValueError("web_fallback não deve ser utilizado no contexto atual (mantenha None).")
 
@@ -144,7 +154,6 @@ class TrailOutput(BaseModel):
             if len(self.suggested_trails) > 3:
                 raise ValueError("suggested_trails deve conter no máximo 3 itens.")
         elif self.status == "fora_do_escopo":
-            # Em fora_do_escopo não retornamos recomendações; exige mensagem padrão
             if self.suggested_trails and len(self.suggested_trails) > 0:
                 raise ValueError("Quando status='fora_do_escopo', não deve haver suggested_trails.")
             if self.mensagem_padrao is None or self.mensagem_padrao.strip() == "":
