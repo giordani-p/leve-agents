@@ -1,16 +1,18 @@
 # reco/normalizer.py
 """
-Normalização do catálogo de trilhas — V4 / P1 Híbrido (BM25 + MPNet)
+Normalizador de Dados - Leve Agents
 
-Responsável por:
-- Converter itens brutos (dict) em TrailCandidate (via schema).
-- (Opcional) Preencher combined_text quando ausente.
-- Filtrar por status permitido (case-insensitive).
-- Deduplicar por publicId mantendo maior 'completude'.
-- Ordem estável para evitar flutuações no pipeline.
+Responsável pela normalização e limpeza de dados do catálogo de trilhas educacionais.
+Converte dados brutos em formatos padronizados e aplica filtros de qualidade.
 
-Compat:
-- Mantém as funções públicas to_candidates, filter_by_status, dedupe_by_public_id.
+Funcionalidades:
+- Conversão de dados brutos para TrailCandidate (schema padronizado)
+- Preenchimento automático de campos ausentes (combined_text)
+- Filtragem por status permitido (case-insensitive)
+- Deduplicação por publicId mantendo maior completude
+- Ordem estável para evitar flutuações no pipeline
+- Validação de dados obrigatórios
+- Logging de operações para observabilidade
 """
 
 from __future__ import annotations

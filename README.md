@@ -5,6 +5,7 @@ Sistema inteligente de agentes especializados em orientação educacional e prof
 ## 🚀 Características Principais
 
 - **3 Agentes Especializados**: Orientador Educacional, Especialista de Carreira e Perfilador Psicológico
+- **Sistema de Recomendação**: Busca híbrida (BM25 + semântica) para trilhas educacionais personalizadas
 - **Monitoramento de Custos**: Integração com AgentOps para acompanhamento de gastos de LLM
 - **Validação Completa**: Schemas Pydantic com validação de negócio
 - **Múltiplos LLMs**: Suporte a OpenAI e Groq
@@ -28,6 +29,15 @@ Sistema inteligente de agentes especializados em orientação educacional e prof
    - Análise psicológica e comportamental profunda
    - Identificação de motivações, valores e estilos de aprendizado
    - Insights para personalização de recomendações
+
+### Sistema de Recomendação
+
+4. **Sistema de Recomendação** (`reco/`)
+   - **Busca Híbrida**: Combina BM25 (textual) e MPNet (semântica) para máxima precisão
+   - **Personalização**: Recomendações baseadas no perfil completo do usuário
+   - **Múltiplas Fontes**: Suporte a API da Leve e arquivos locais
+   - **Ranking Inteligente**: Sistema de boosts e filtros de negócio
+   - **Observabilidade**: Logs detalhados para análise e otimização
 
 ## ⚙️ Configuração Rápida
 
@@ -85,6 +95,21 @@ python -m cli.main_psychological -d "Escolaridade: Ensino médio completo..."
 python -m cli.main_psychological --data-file files/snapshots/carlos_001.json --json
 ```
 
+### Sistema de Recomendação
+```bash
+# Busca básica
+python -m cli.main_reco -q "Quero aprender programação do zero"
+
+# Com perfil personalizado
+python -m cli.main_reco -q "Quais áreas combinam com meu perfil?" --snapshot-path files/snapshots/ana_001.json
+
+# Usando API da Leve
+python -m cli.main_reco -q "Como organizar meus estudos?" --source api --api-base http://localhost:3000
+
+# Output em JSON
+python -m cli.main_reco -q "trilhas para iniciantes" --json
+```
+
 ## 📁 Estrutura do Projeto
 
 ```
@@ -96,14 +121,29 @@ leve-agents/
 ├── cli/                      # Interfaces de linha de comando
 │   ├── main_advisor.py       # CLI do Orientador
 │   ├── main_career.py        # CLI do Especialista de Carreira
-│   └── main_psychological.py # CLI do Perfilador
+│   ├── main_psychological.py # CLI do Perfilador
+│   └── main_reco.py          # CLI do Sistema de Recomendação
+├── reco/                     # Sistema de Recomendação
+│   ├── config.py            # Configuração do sistema
+│   ├── pipeline.py          # Pipeline principal
+│   ├── data_loader.py       # Carregamento de dados
+│   ├── data_loader_api.py   # Integração com API
+│   ├── embeddings/          # Provedores de embeddings
+│   ├── index/               # Índices vetoriais
+│   ├── retriever/           # Retrievers (dense/hybrid)
+│   ├── ranker.py            # Sistema de ranking
+│   ├── explainer.py         # Geração de explicações
+│   └── output_builder.py    # Construção de output
 ├── models/                   # Configuração de LLMs
 │   ├── llm.py               # Funções de LLM com AgentOps
 │   └── llm_config.py        # Configurações dos modelos
 ├── schemas/                  # Schemas de dados
 │   ├── advisor_output.py    # Schema do Orientador
 │   ├── career_output.py     # Schema do Especialista
-│   └── psychological_output.py # Schema do Perfilador
+│   ├── psychological_output.py # Schema do Perfilador
+│   ├── trail_input.py       # Schema de entrada de trilhas
+│   ├── trail_output.py      # Schema de saída de trilhas
+│   └── trail_candidate.py   # Schema de candidatos
 ├── tasks/                    # Definição das tarefas
 │   ├── advisor_task.py      # Task do Orientador
 │   ├── career_coach_task.py # Task do Especialista
@@ -111,7 +151,8 @@ leve-agents/
 ├── validators/               # Validação de negócio
 ├── helpers/                  # Utilitários
 ├── files/                    # Arquivos de referência
-│   └── snapshots/           # Perfis de exemplo
+│   ├── snapshots/           # Perfis de exemplo
+│   └── trails/              # Catálogo de trilhas
 ├── docs/                     # Documentação
 │   └── agentops_monitoramento.md # Guia do AgentOps
 ├── crew_config.py           # Configuração das crews
@@ -130,6 +171,29 @@ leve-agents/
 ### OpenAI
 - `gpt-4o` (Padrão)
 - `gpt-3.5-turbo`
+
+## 🔍 Sistema de Recomendação
+
+O sistema de recomendação utiliza uma arquitetura híbrida avançada para recomendar trilhas educacionais personalizadas:
+
+### Arquitetura Híbrida
+- **BM25 (Esparso)**: Busca textual tradicional para termos exatos
+- **MPNet (Denso)**: Busca semântica para compreensão de contexto
+- **Blending Inteligente**: Combinação otimizada dos dois métodos
+- **Normalização**: Padronização de scores para comparação justa
+
+### Funcionalidades Avançadas
+- **Personalização**: Recomendações baseadas no perfil completo do usuário
+- **Múltiplas Fontes**: API da Leve ou arquivos locais com fallback automático
+- **Ranking Inteligente**: Sistema de boosts e filtros de negócio
+- **Expansão de Consulta**: Sinônimos automáticos para melhor cobertura
+- **Observabilidade**: Logs detalhados para análise e otimização
+
+### Configuração Flexível
+- **Thresholds por Tipo**: Diferentes limiares para trilhas vs vagas
+- **Modos de Busca**: Híbrido, apenas BM25, ou apenas semântico
+- **Parâmetros Ajustáveis**: Pesos, normalização e boosts configuráveis
+- **Timeouts e Retries**: Configuração robusta para APIs externas
 
 ## 📊 Monitoramento de Custos
 
@@ -154,10 +218,18 @@ Para mais detalhes, consulte [docs/agentops_monitoramento.md](docs/agentops_moni
 - **Suporte a múltiplos provedores** (OpenAI, Groq)
 - **Configurações otimizadas** para cada modelo
 
+### Sistema de Recomendação
+- **Arquitetura híbrida** com BM25 e MPNet
+- **Configuração flexível** em `reco/config.py`
+- **Pipeline modular** para fácil manutenção e extensão
+- **Validação rigorosa** com schemas Pydantic
+- **Observabilidade completa** com logs detalhados
+
 ### Documentação
-- **Docstrings padronizadas** em todos os módulos
-- **Comentários objetivos** e informativos
-- **Exemplos de uso** nos CLIs
+- **Docstrings padronizadas** com funcionalidades detalhadas
+- **Comentários objetivos** alinhados com a versão atual
+- **Exemplos de uso** nos CLIs e documentação técnica
+- **Arquitetura documentada** para cada módulo principal
 
 ## 📈 Próximos Passos
 
@@ -166,6 +238,10 @@ Para mais detalhes, consulte [docs/agentops_monitoramento.md](docs/agentops_moni
 - [ ] Sistema de cache para otimização
 - [ ] Métricas avançadas de performance
 - [ ] Integração com bases de dados de cursos
+- [ ] Índices vetoriais persistentes (FAISS/ChromaDB)
+- [ ] A/B testing para algoritmos de recomendação
+- [ ] Sistema de feedback para melhorar recomendações
+- [ ] Integração com mais fontes de dados educacionais
 
 ## 🤝 Contribuição
 

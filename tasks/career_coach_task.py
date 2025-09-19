@@ -1,8 +1,17 @@
 """
 Task do Especialista de Carreira - Leve Agents
 
-Define a tarefa de execução prática para conseguir primeiro emprego,
-focando em ações concretas e acionáveis para jovens.
+Define a tarefa de execução prática para conseguir primeiro emprego para jovens brasileiros.
+Foca em ações concretas, acionáveis e imediatas com conselhos práticos testados.
+
+Funcionalidades:
+- Conselhos práticos sobre currículo e portfólio
+- Preparação para entrevistas e processos seletivos
+- Estratégias de networking e aplicações
+- Negociação salarial e primeiros dias no trabalho
+- Personalização baseada no perfil do usuário
+- Instruções específicas com exemplos práticos
+- Recursos concretos e acionáveis
 """
 from crewai import Task
 from agents.career_coach_agent import career_coach_agent

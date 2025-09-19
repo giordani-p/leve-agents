@@ -1,20 +1,19 @@
 # reco/ranker.py
 """
-Ranking de negócio — V4 / P1 Híbrido (BM25 + MPNet)
+Sistema de Ranking - Leve Agents
 
-O que faz:
-- Recebe candidatos já pontuados (legado: content_score do BM25; novo: scores do híbrido).
-- Usa o score "base" para ranking:
-    - Se houver score_combined (híbrido), usa ele.
-    - Senão, usa o content_score legado.
-- Aplica boosts explicáveis (título/descrição, tags/tema, difficulty=Beginner).
-- Faz cap/clamp do score (0..1) e aplica threshold por coleção (Trilhas P1).
-- Dedup por publicId, ordena desc e corta em MAX_SUGGESTIONS.
-- Fallback de dominância: se ninguém passa do threshold, aceita top-1 se >= DOMINANCE_MIN_ACCEPT.
+Sistema inteligente de ranking que combina scores de diferentes fontes e aplica
+regras de negócio para ordenar e filtrar recomendações de trilhas educacionais.
 
-Notas:
-- Tokenização acento-insensível (normalização NFKD + casefold).
-- Mantém compatibilidade com o formato antigo de entrada.
+Funcionalidades:
+- Combinação de scores híbridos (BM25 + MPNet) e legados
+- Aplicação de boosts explicáveis (título, descrição, tags, nível)
+- Normalização e cap de scores (0..1)
+- Thresholds específicos por tipo de conteúdo
+- Deduplicação por publicId
+- Fallback de dominância para garantir resultados
+- Tokenização acento-insensível
+- Compatibilidade com formatos legados
 """
 
 from __future__ import annotations

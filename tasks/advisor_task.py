@@ -1,8 +1,18 @@
 """
 Task do Orientador Educacional - Leve Agents
 
-Define a tarefa de planejamento estratégico de carreira de longo prazo,
-incluindo análise de perfil e criação de roadmap de desenvolvimento.
+Define a tarefa de planejamento estratégico de carreira de longo prazo para jovens brasileiros.
+Inclui análise completa de perfil, identificação de direções de carreira e criação de roadmap
+personalizado com marcos e prazos.
+
+Funcionalidades:
+- Análise de perfil completo (acadêmico, habilidades, contexto socioeconômico)
+- Identificação de direções de carreira baseadas em dados objetivos
+- Criação de roadmap de desenvolvimento com marcos e prazos
+- Análise de oportunidades de mercado e tendências
+- Estratégias adaptadas para diferentes realidades
+- Plano de ação com próximos passos específicos
+- Análise de riscos e oportunidades
 """
 from crewai import Task
 from agents.advisor_agent import advisor_agent

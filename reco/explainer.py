@@ -1,16 +1,17 @@
 # reco/explainer.py
 """
-Geração do texto de 'por que indicar' (why_match) — V4 / P1 Híbrido
+Gerador de Explicações - Leve Agents
 
-Princípios:
-- Tom cordial e jovem.
-- Frase curta (1–2 ideias principais).
-- Baseada em sinais explicáveis: tema/tags, palavra-âncora em título/descrição, nível (Beginner) e pistas do conteúdo.
+Gera explicações claras e objetivas sobre por que uma trilha foi recomendada.
+Cria textos explicativos baseados em sinais identificáveis e relevantes para o usuário.
 
-Novidades:
-- Matching acento-insensível (casefold + strip de acentos).
-- Se não houver tag, tenta extrair uma palavra-âncora do título/descrição que aparece na pergunta.
-- Pequeno ajuste de confiança quando o score combinado é alto (sem jargão técnico).
+Funcionalidades:
+- Geração de explicações em tom cordial e jovem
+- Identificação de palavras-âncora em títulos e descrições
+- Matching acento-insensível para melhor cobertura
+- Baseado em sinais explicáveis (tags, tema, nível, conteúdo)
+- Ajuste de confiança baseado no score combinado
+- Fallback inteligente quando não há tags disponíveis
 """
 
 from __future__ import annotations

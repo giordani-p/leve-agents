@@ -1,23 +1,26 @@
 # cli/main_reco.py
 """
-CLI do Sistema de Recomendação — Versão Oficial (P1 híbrida)
-- Mantém compatibilidade com sua CLI atual (V1).
-- Acrescenta controles da P1: modo (hybrid/bm25/dense), blending, normalização e thresholds por coleção.
+CLI do Sistema de Recomendação - Leve Agents
+
+Interface de linha de comando para o sistema de recomendação de trilhas educacionais.
+Suporta diferentes modos de busca e fontes de dados para máxima flexibilidade.
+
+Funcionalidades:
+- Busca híbrida (BM25 + semântica) com blending configurável
+- Suporte a múltiplas fontes: API da Leve ou arquivos locais
+- Personalização baseada em perfil do usuário (snapshot)
+- Output em formato JSON ou texto legível
+- Configuração flexível de parâmetros de busca
 
 Fontes de dados:
-  --source api   → lê catálogo via endpoint /api/trails do backend da Leve
-  --source files → lê catálogo via arquivo local em files/trails/trails_examples.json
+- --source api: Endpoint /api/trails do backend da Leve
+- --source files: Arquivo local files/trails/trails_examples.json
 
-Exemplos:
-  python -m cli.main_reco -q "Quero aprender programação do zero"
-  python -m cli.main_reco -q "trilhas para iniciantes" --json
-  python -m cli.main_reco -q "Como organizar meus estudos?" --source api --api-base http://localhost:3000
-  python -m cli.main_reco -q "Quais áreas combinam com meu perfil?" --source files --snapshot-path files/snapshots/ana_001.json
-
-Termos:
-- blending (mistura de escores): combina BM25 (esparso) e Embeddings (denso).
-- normalização: coloca escores numa mesma escala antes do blending.
-- threshold (limiar): valor mínimo de score para aceitar uma recomendação.
+Exemplos de uso:
+- python -m cli.main_reco -q "Quero aprender programação do zero"
+- python -m cli.main_reco -q "trilhas para iniciantes" --json
+- python -m cli.main_reco -q "Como organizar meus estudos?" --source api
+- python -m cli.main_reco -q "Quais áreas combinam com meu perfil?" --snapshot-path files/snapshots/ana_001.json
 """
 
 from __future__ import annotations
@@ -29,7 +32,11 @@ from typing import Optional
 
 from reco.config import RecoConfig
 from reco.pipeline import run as run_pipeline
+from reco.recommendation_logger import log_recommendation
 from schemas.trail_input import TrailInput
+import time
+import json
+from pathlib import Path
 
 
 # --------- Argumentos --------- #
@@ -47,13 +54,13 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--snapshot-path",
-        default="files/snapshots/pablo_agro_001.json",
-        help="Caminho do JSON de snapshot (default: files/snapshots/pablo_agro_001.json).",
+        default="files/snapshots/pablo_001.json",
+        help="Caminho do JSON de snapshot (default: files/snapshots/pablo_001.json).",
     )
     parser.add_argument(
         "--trails-path",
-        default="files/trails/trails_examples.json",
-        help="Caminho do JSON de trilhas (default: files/trails/trails_examples.json). Ignorado quando --source=api.",
+        default="files/trails/trails_faker.json",
+        help="Caminho do JSON de trilhas (default: files/trails/trails_faker.json). Ignorado quando --source=api.",
     )
     parser.add_argument(
         "--max-results",
@@ -77,8 +84,8 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--source",
         choices=["api", "files"],
-        default="api",
-        help="Fonte do catálogo de trilhas: 'api' (padrão) ou 'files'.",
+        default="files",
+        help="Fonte do catálogo de trilhas: 'api' ou 'files' (padrão).",
     )
     parser.add_argument(
         "--api-base",
@@ -234,7 +241,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         COLLECTION=args.collection,
     )
 
-    # Execução
+    # Execução com logging
+    start_time = time.time()
+    success = True
+    error_message = None
+    
     try:
         output = run_pipeline(
             user_input=user_input,
@@ -243,8 +254,61 @@ def main(argv: Optional[list[str]] = None) -> int:
             cfg=cfg,
         )
     except Exception as e:
+        success = False
+        error_message = str(e)
         print(f"[ERRO] Falha ao executar o recomendador: {e}", file=sys.stderr)
         return 1
+    
+    execution_time_ms = (time.time() - start_time) * 1000
+    
+    # Log da recomendação
+    try:
+        # Carrega perfil do usuário se disponível
+        user_profile = {}
+        if args.snapshot_path and Path(args.snapshot_path).exists():
+            with open(args.snapshot_path, 'r', encoding='utf-8') as f:
+                user_profile = json.load(f)
+        
+        # Converte output para formato de logging
+        results = []
+        if hasattr(output, 'suggested_trails') and output.suggested_trails:
+            for trail in output.suggested_trails:
+                result = {
+                    'publicId': str(getattr(trail, 'publicId', '')),
+                    'title': getattr(trail, 'title', ''),
+                    'score': getattr(trail, 'match_score', 0.0),
+                    'explanation': getattr(trail, 'why_match', ''),
+                    'metadata': {
+                        'difficulty': getattr(trail, 'difficulty', ''),
+                        'tags': getattr(trail, 'tags', []),
+                        'status': getattr(trail, 'status', '')
+                    }
+                }
+                results.append(result)
+        
+        # Registra no logger
+        session_id = log_recommendation(
+            user_profile=user_profile,
+            query_text=args.user_question,
+            results=results,
+            execution_time_ms=execution_time_ms,
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            num_recommendations=args.max_results,
+            filters={
+                'collection': getattr(cfg, 'COLLECTION', 'trilhas'),
+                'mode': getattr(cfg, 'MODE', 'hybrid'),
+                'alpha': getattr(cfg, 'ALPHA', 0.5)
+            },
+            success=success,
+            error_message=error_message
+        )
+        
+        if not getattr(args, "json", False):
+            print(f"\nSessão registrada: {session_id}")
+            print(f"Tempo de execução: {execution_time_ms:.2f}ms")
+    
+    except Exception as log_error:
+        print(f"[AVISO] Erro ao registrar log: {log_error}", file=sys.stderr)
 
     # Impressão
     if getattr(args, "json", False):
@@ -256,7 +320,6 @@ def main(argv: Optional[list[str]] = None) -> int:
             print(output.json(indent=2, ensure_ascii=False))
         else:
             # Melhor esforço
-            import json
             try:
                 print(json.dumps(output, ensure_ascii=False, indent=2))
             except TypeError:

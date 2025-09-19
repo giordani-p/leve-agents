@@ -1,14 +1,23 @@
 # reco/config.py
 """
-Parâmetros centrais do Sistema de Recomendação — V4 / P1 Híbrido (BM25 + MPNet)
+Configuração do Sistema de Recomendação - Leve Agents
 
-Mudanças nesta revisão (P1):
-- Suporte a modo HÍBRIDO (BM25 + Denso) com blending/normalização configuráveis.
-- Thresholds separados por coleção (trilhas vs vagas).
-- Versão de modelo e nomes de índices vetoriais (facilitam shadow test/rollback).
-- Observabilidade (logs do retrieval e do explainer).
-- Sinônimos ativados apenas para o caminho BM25 (no denso ficam desligados).
-- Ajustes finos: SCORE_CAP=0.99, DOMINANCE_MIN_ACCEPT=0.60, HTTP_TIMEOUT_READ=10.0.
+Sistema híbrido de recomendação que combina busca semântica (MPNet) e BM25
+para recomendar trilhas educacionais personalizadas para jovens brasileiros.
+
+Arquitetura:
+- Retrieval híbrido: BM25 (esparso) + MPNet (denso) com blending configurável
+- Normalização de scores para combinação otimizada
+- Thresholds específicos por tipo de conteúdo (trilhas vs vagas)
+- Expansão de consulta com sinônimos (apenas BM25)
+- Integração com API da Leve e fallback para arquivos locais
+
+Funcionalidades:
+- Recomendação personalizada baseada em perfil do usuário
+- Suporte a múltiplas fontes de dados (API/files)
+- Sistema de ranking com boosts e filtros de negócio
+- Observabilidade completa com logs detalhados
+- Configuração flexível para diferentes cenários de uso
 """
 
 from dataclasses import dataclass
@@ -59,7 +68,7 @@ class RecoConfig:
     # -----------------------------
     # Híbrido BM25 + Denso
     # -----------------------------
-    USE_HYBRID: bool = False
+    USE_HYBRID: bool = True
     FUSION_METHOD: Literal["weighted", "rrf"] = "weighted"
     WEIGHTS: Optional[Dict[str, float]] = None  # definido em __post_init__  {"semantic": 0.65, "bm25": 0.35}
     NORMALIZATION: Literal["minmax", "zscore"] = "minmax"

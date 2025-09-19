@@ -1,5 +1,15 @@
 """
-Configuração centralizada para LLMs
+Configuração centralizada para LLMs - Leve Agents
+
+Gerencia configurações de modelos de linguagem (OpenAI e Groq) com validação
+e suporte a variáveis de ambiente para personalização.
+
+Funcionalidades:
+- Configuração centralizada para OpenAI e Groq
+- Validação de parâmetros de configuração
+- Suporte a variáveis de ambiente (.env)
+- Configurações otimizadas por provedor
+- Tratamento de timeouts e retries
 """
 import os
 from dataclasses import dataclass

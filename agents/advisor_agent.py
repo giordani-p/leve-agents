@@ -1,8 +1,16 @@
 """
 Agente Orientador Educacional - Leve Agents
 
-Especialista em planejamento de carreira de longo prazo para jovens brasileiros.
-Foca em estratégias adaptadas para diferentes realidades socioeconômicas.
+Especialista em planejamento estratégico de carreira para jovens brasileiros (15-26 anos).
+Analisa perfis completos e cria roadmaps de desenvolvimento personalizados considerando
+contexto socioeconômico, habilidades, barreiras e aspirações profissionais.
+
+Funcionalidades:
+- Análise de perfil completo (acadêmico, habilidades, contexto socioeconômico)
+- Identificação de direções de carreira baseadas em dados objetivos
+- Criação de roadmap de desenvolvimento com marcos e prazos
+- Adaptação para diferentes realidades (acadêmica, técnica, artística, empreendedora)
+- Integração com perfil DISC e talentos CliftonStrengths
 """
 from crewai import Agent
 from models.llm import get_groq_llm

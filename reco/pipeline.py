@@ -1,22 +1,24 @@
 # reco/pipeline.py
 """
-Pipeline ponta a ponta — V4 / P1 Híbrido (BM25 + MPNet)
+Pipeline de Recomendação - Leve Agents
 
-Fluxo:
-1) Carrega snapshot e catálogo (API ou arquivos).
-2) Normaliza em TrailCandidate, deduplica e filtra por status ("Published").
-3) Monta a consulta (pergunta + pistas do snapshot + contexto extra).
-4) Constrói índice vetorial em memória (NumPy) e, se híbrido, prepara BM25.
-5) Retrieval:
-   - Denso: DenseRetriever (MPNet) -> Top-K semântico
-   - Híbrido: HybridRetriever (BM25 + Denso) -> Top-K combinado
-6) Ranking com regras de negócio (boosts, threshold por coleção, dedupe, top-N).
-7) Gera why_match e constrói TrailOutput com validações de negócio.
+Pipeline completo de recomendação de trilhas educacionais que processa
+perfis de usuários e retorna recomendações personalizadas.
 
-Observações:
-- Índice vetorial é construído on-the-fly para o catálogo carregado (piloto).
-  Em produção, preferir FAISS/pgvector/OpenSearch e job offline de embeddings.
-- O threshold usado aqui é o de "trilhas" (P1). Vagas entram no P2.
+Fluxo de processamento:
+1. Carregamento: Snapshot do usuário + catálogo de trilhas (API/files)
+2. Normalização: Conversão para TrailCandidate com deduplicação e filtros
+3. Construção de consulta: Pergunta + pistas do perfil + contexto adicional
+4. Indexação: Criação de índices vetoriais (MPNet) e BM25 em memória
+5. Retrieval: Busca híbrida combinando semântica e textual
+6. Ranking: Aplicação de regras de negócio e boosts personalizados
+7. Output: Geração de explicações e validação final
+
+Arquitetura:
+- Índices construídos on-the-fly (piloto) - produção usa índices persistentes
+- Suporte a múltiplas fontes de dados com fallback automático
+- Sistema de logging completo para observabilidade
+- Validação rigorosa com schemas Pydantic
 """
 
 from __future__ import annotations

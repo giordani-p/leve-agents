@@ -1,8 +1,18 @@
 """
 Agente Especialista em Primeiro Emprego - Leve Agents
 
-Foca em execução prática para conseguir primeiro emprego.
-Oferece conselhos concretos e acionáveis sobre currículo, entrevistas e networking.
+Especialista em execução prática para conseguir primeiro emprego para jovens brasileiros.
+Foca em ações concretas e imediatas, oferecendo conselhos práticos e testados
+sobre currículo, entrevistas, networking e negociação.
+
+Funcionalidades:
+- Conselhos práticos sobre currículo e portfólio
+- Preparação para entrevistas e processos seletivos
+- Estratégias de networking e aplicações
+- Negociação salarial e primeiros dias no trabalho
+- Personalização baseada no perfil do usuário (profile_snapshot)
+- Busca de informações atualizadas sobre vagas e mercado
+- Respostas em formato JSON estruturado
 """
 from crewai import Agent
 from models.llm import get_openai_llm

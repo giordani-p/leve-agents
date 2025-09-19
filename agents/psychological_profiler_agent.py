@@ -1,8 +1,18 @@
 """
 Agente Perfilador Psicológico - Leve Agents
 
-Analisa perfis psicológicos e comportamentais para orientação personalizada.
-Identifica motivações, estilos de aprendizado e necessidades de desenvolvimento.
+Especialista em análise psicológica e comportamental para orientação personalizada.
+Identifica motivações profundas, estilos de aprendizado e necessidades de desenvolvimento
+baseado em metodologias psicológicas consolidadas.
+
+Funcionalidades:
+- Análise comportamental e psicológica profunda
+- Identificação de motivações, valores e estilos de comunicação
+- Interpretação de talentos CliftonStrengths já identificados
+- Análise de preferências de trabalho e tolerância ao risco
+- Aplicação de metodologias DISC, Big Five e Teoria da Autodeterminação
+- Geração de insights para personalização de recomendações
+- Respeito à privacidade e promoção do autoconhecimento
 """
 from crewai import Agent
 from models.llm import get_openai_llm
