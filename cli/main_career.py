@@ -30,6 +30,7 @@ from schemas.career_input import CareerInput
 from schemas.career_output import CareerOutput
 from validators.career_output_checks import run_all_checks
 from helpers.json_extractor import try_extract_json
+from helpers.snapshot_selector import select_profile_snapshot, load_snapshot_from_file
 
 # Inicialização do AgentOps para monitoramento de custos
 import agentops
@@ -60,81 +61,6 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _select_profile_snapshot() -> Tuple[Optional[dict], str]:
-    """
-    Lista arquivos .json em files/snapshots/ e permite seleção.
-    Opções:
-      - Enter: pular (sem snapshot)
-      - Número: carrega o arquivo correspondente
-      - 'm': colar JSON manualmente
-    Retorna (snapshot_dict | None, label_str)
-    """
-    # Localiza a pasta files/snapshots a partir da raiz do projeto
-    root_dir = Path(__file__).resolve().parents[1]
-    snapshots_dir = root_dir / "files" / "snapshots"
-
-    print("\n=== Profile Snapshot (opcional) ===")
-
-    files: list[Path] = []
-    try:
-        if snapshots_dir.exists() and snapshots_dir.is_dir():
-            files = sorted([p for p in snapshots_dir.glob("*.json") if p.is_file()], key=lambda p: p.name.lower())
-    except Exception:
-        files = []
-
-    if files:
-        print("Snapshots disponíveis em files/snapshots/:")
-        for idx, p in enumerate(files, start=1):
-            print(f"[{idx}] {p.name}")
-        print("[m] Colar JSON manualmente")
-        print("[Enter] Pular (sem snapshot)")
-    else:
-        print("Nenhum arquivo .json encontrado em files/snapshots/.")
-        print("[m] Colar JSON manualmente")
-        print("[Enter] Pular (sem snapshot)")
-
-    while True:
-        choice = input("Selecione uma opção (número, 'm' ou Enter): ").strip().lower()
-
-        if choice == "":
-            return None, "nenhum"
-
-        if choice == "m":
-            profile_raw = input("Cole o JSON do snapshot e pressione Enter:\n")
-            if not profile_raw.strip():
-                print("Entrada vazia. Voltando ao menu de snapshot.")
-                continue
-            try:
-                return json.loads(profile_raw), "[manual]"
-            except json.JSONDecodeError as e:
-                print(f"JSON inválido: {e}. Tente novamente.")
-                continue
-
-        if choice.isdigit() and files:
-            idx = int(choice)
-            if 1 <= idx <= len(files):
-                selected = files[idx - 1]
-                try:
-                    text = selected.read_text(encoding="utf-8")
-                    return json.loads(text), selected.name
-                except (OSError, json.JSONDecodeError) as e:
-                    print(f"Falha ao carregar '{selected.name}': {e}. Selecione outra opção.")
-                    continue
-            else:
-                print("Número fora do intervalo. Tente novamente.")
-                continue
-
-        print("Opção inválida. Tente novamente.")
-
-
-def _load_snapshot_from_file(snapshot_path: str) -> Optional[dict]:
-    """Carrega snapshot de um arquivo JSON."""
-    try:
-        with open(snapshot_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except (OSError, json.JSONDecodeError) as e:
-        print(f"[ERRO] Falha ao carregar snapshot '{snapshot_path}': {e}", file=sys.stderr)
-        return None
 
 
 def _print_pretty(output: CareerOutput) -> None:
@@ -165,12 +91,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     # Carrega snapshot se fornecido
     profile_snapshot = None
     if args.snapshot_path:
-        profile_snapshot = _load_snapshot_from_file(args.snapshot_path)
+        profile_snapshot = load_snapshot_from_file(args.snapshot_path)
         if profile_snapshot is None:
             return 1
     else:
         # Se não foi fornecido snapshot via argumento, permite seleção interativa
-        profile_snapshot, snapshot_label = _select_profile_snapshot()
+        profile_snapshot, snapshot_label = select_profile_snapshot()
         print(f"\nSnapshot selecionado: {snapshot_label}")
 
     # Valida o input do usuário

@@ -27,6 +27,7 @@ from crew_config import psychological_profiler_crew
 from schemas.psychological_output import PsychologicalOutput
 from validators.psychological_output_checks import validate_psychological_output
 from helpers.json_extractor import try_extract_json
+from helpers.snapshot_selector import select_profile_snapshot, load_snapshot_from_file
 
 # Inicialização do AgentOps para monitoramento de custos
 import agentops
@@ -48,6 +49,10 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
         help="Arquivo com dados de perfil do usuário.",
     )
     parser.add_argument(
+        "--snapshot",
+        help="Caminho para o arquivo de snapshot do jovem (ex: files/snapshots/pablo_001.json)",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
         help="Imprime o objeto ProfileOutput completo em JSON.",
@@ -63,6 +68,100 @@ def _load_data_from_file(file_path: str) -> Optional[str]:
     except OSError as e:
         print(f"[ERRO] Falha ao carregar arquivo '{file_path}': {e}", file=sys.stderr)
         return None
+
+
+def _format_snapshot_as_text(snapshot_data: dict) -> str:
+    """Converte dados de snapshot JSON em texto formatado para o perfilador."""
+    text_parts = []
+    
+    # Dados pessoais
+    if 'dados_pessoais' in snapshot_data:
+        dados_pessoais = snapshot_data['dados_pessoais']
+        text_parts.append("=== DADOS PESSOAIS ===")
+        text_parts.append(f"Nome: {dados_pessoais.get('nome_preferido', 'N/A')}")
+        text_parts.append(f"Idade: {dados_pessoais.get('idade', 'N/A')}")
+        text_parts.append(f"Localização: {dados_pessoais.get('localizacao', 'N/A')}")
+        text_parts.append(f"Disponibilidade de tempo: {dados_pessoais.get('disponibilidade_tempo', 'N/A')}")
+        text_parts.append("")
+    
+    # Situação acadêmica
+    if 'situacao_academica' in snapshot_data:
+        situacao = snapshot_data['situacao_academica']
+        text_parts.append("=== SITUAÇÃO ACADÊMICA ===")
+        text_parts.append(f"Estágio escolar: {situacao.get('estagio_escolar', 'N/A')}")
+        text_parts.append(f"Curso atual: {situacao.get('curso_atual', 'N/A')}")
+        text_parts.append(f"Instituição: {situacao.get('instituicao', 'N/A')}")
+        text_parts.append(f"Nota média: {situacao.get('nota_media', 'N/A')}")
+        
+        if situacao.get('materias_favoritas'):
+            text_parts.append(f"Matérias favoritas: {', '.join(situacao['materias_favoritas'])}")
+        if situacao.get('materias_dificuldade'):
+            text_parts.append(f"Matérias com dificuldade: {', '.join(situacao['materias_dificuldade'])}")
+        text_parts.append("")
+    
+    # Objetivos de carreira
+    if 'objetivos_carreira' in snapshot_data:
+        objetivos = snapshot_data['objetivos_carreira']
+        text_parts.append("=== OBJETIVOS DE CARREIRA ===")
+        text_parts.append(f"Objetivo principal: {objetivos.get('objetivo_principal', 'N/A')}")
+        
+        if objetivos.get('objetivos_especificos'):
+            text_parts.append("Objetivos específicos:")
+            for obj in objetivos['objetivos_especificos']:
+                text_parts.append(f"- {obj}")
+        
+        if objetivos.get('metas_temporais'):
+            metas = objetivos['metas_temporais']
+            if metas.get('curto_prazo'):
+                text_parts.append("Metas de curto prazo:")
+                for meta in metas['curto_prazo']:
+                    text_parts.append(f"- {meta}")
+            if metas.get('medio_prazo'):
+                text_parts.append("Metas de médio prazo:")
+                for meta in metas['medio_prazo']:
+                    text_parts.append(f"- {meta}")
+            if metas.get('longo_prazo'):
+                text_parts.append("Metas de longo prazo:")
+                for meta in metas['longo_prazo']:
+                    text_parts.append(f"- {meta}")
+        text_parts.append("")
+    
+    # Experiência profissional
+    if 'experiencia_profissional' in snapshot_data:
+        exp = snapshot_data['experiencia_profissional']
+        text_parts.append("=== EXPERIÊNCIA PROFISSIONAL ===")
+        text_parts.append(f"Tem experiência: {exp.get('tem_experiencia', 'N/A')}")
+        if exp.get('experiencias'):
+            text_parts.append("Experiências:")
+            for exp_item in exp['experiencias']:
+                text_parts.append(f"- {exp_item}")
+        text_parts.append("")
+    
+    # Habilidades e competências
+    if 'habilidades_competencias' in snapshot_data:
+        hab = snapshot_data['habilidades_competencias']
+        text_parts.append("=== HABILIDADES E COMPETÊNCIAS ===")
+        if hab.get('habilidades_tecnicas'):
+            text_parts.append(f"Habilidades técnicas: {', '.join(hab['habilidades_tecnicas'])}")
+        if hab.get('habilidades_interpessoais'):
+            text_parts.append(f"Habilidades interpessoais: {', '.join(hab['habilidades_interpessoais'])}")
+        if hab.get('idiomas'):
+            text_parts.append(f"Idiomas: {', '.join(hab['idiomas'])}")
+        text_parts.append("")
+    
+    # Preferências e interesses
+    if 'preferencias_interesses' in snapshot_data:
+        pref = snapshot_data['preferencias_interesses']
+        text_parts.append("=== PREFERÊNCIAS E INTERESSES ===")
+        if pref.get('areas_interesse'):
+            text_parts.append(f"Áreas de interesse: {', '.join(pref['areas_interesse'])}")
+        if pref.get('tipo_trabalho_preferido'):
+            text_parts.append(f"Tipo de trabalho preferido: {pref['tipo_trabalho_preferido']}")
+        if pref.get('ambiente_trabalho_ideal'):
+            text_parts.append(f"Ambiente de trabalho ideal: {pref['ambiente_trabalho_ideal']}")
+        text_parts.append("")
+    
+    return "\n".join(text_parts)
 
 
 def _print_pretty(output: PsychologicalOutput) -> None:
@@ -150,15 +249,30 @@ def main(argv: Optional[list[str]] = None) -> int:
     args = _parse_args(argv)
     
     # Carrega dados de perfil
-    if args.data_file:
+    dados = None
+    
+    if args.snapshot:
+        # Carrega snapshot se fornecido
+        snapshot_data = load_snapshot_from_file(args.snapshot)
+        if snapshot_data is None:
+            return 1
+        # Converte snapshot para formato de texto para o perfilador
+        dados = _format_snapshot_as_text(snapshot_data)
+    elif args.data_file:
         dados = _load_data_from_file(args.data_file)
         if dados is None:
             return 1
     elif args.data:
         dados = args.data
     else:
-        print("[ERRO] É necessário fornecer dados via --data ou --data-file", file=sys.stderr)
-        return 2
+        # Se não foi fornecido nenhum input, permite seleção interativa de snapshot
+        snapshot_data, snapshot_label = select_profile_snapshot()
+        print(f"\nSnapshot selecionado: {snapshot_label}")
+        if snapshot_data:
+            dados = _format_snapshot_as_text(snapshot_data)
+        else:
+            print("[ERRO] É necessário fornecer dados via --data, --data-file ou --snapshot", file=sys.stderr)
+            return 2
 
     print("\nExecutando Perfilador Educacional...\n")
 

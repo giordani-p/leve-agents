@@ -28,12 +28,13 @@ from __future__ import annotations
 import argparse
 import sys
 from dataclasses import replace, is_dataclass, asdict
-from typing import Optional
+from typing import Optional, Tuple
 
 from reco.config import RecoConfig
 from reco.pipeline import run as run_pipeline
 from reco.recommendation_logger import log_recommendation
 from schemas.trail_input import TrailInput
+from helpers.snapshot_selector import select_profile_snapshot, load_snapshot_from_file
 import time
 import json
 from pathlib import Path
@@ -54,8 +55,8 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--snapshot-path",
-        default="files/snapshots/pablo_001.json",
-        help="Caminho do JSON de snapshot (default: files/snapshots/pablo_001.json).",
+        default=None,
+        help="Caminho do JSON de snapshot (opcional). Se não fornecido, permite seleção interativa.",
     )
     parser.add_argument(
         "--trails-path",
@@ -140,7 +141,9 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-# --------- Saída “amigável” --------- #
+
+
+# --------- Saída "amigável" --------- #
 def _print_pretty(output) -> None:
     from textwrap import indent
 
@@ -208,6 +211,21 @@ def _safe_replace_cfg(cfg: RecoConfig, **kwargs) -> RecoConfig:
 def main(argv: Optional[list[str]] = None) -> int:
     args = _parse_args(argv)
 
+    # Carrega snapshot se fornecido, senão permite seleção interativa
+    snapshot_path = args.snapshot_path
+    if not snapshot_path:
+        # Se não foi fornecido snapshot via argumento, permite seleção interativa
+        snapshot_data, snapshot_label = select_profile_snapshot()
+        if snapshot_data:
+            # Cria um arquivo temporário com os dados selecionados
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False, encoding='utf-8') as f:
+                json.dump(snapshot_data, f, ensure_ascii=False, indent=2)
+                snapshot_path = f.name
+            print(f"\nSnapshot selecionado: {snapshot_label}")
+        else:
+            print(f"\nSnapshot selecionado: {snapshot_label}")
+
     # Monta a entrada validada
     try:
         user_input = TrailInput(
@@ -249,7 +267,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     try:
         output = run_pipeline(
             user_input=user_input,
-            snapshot_path=args.snapshot_path,
+            snapshot_path=snapshot_path,
             trails_path=args.trails_path,  # ignorado quando SOURCE='api'
             cfg=cfg,
         )

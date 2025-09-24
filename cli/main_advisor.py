@@ -14,7 +14,8 @@ import argparse
 import json
 import os
 import sys
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Tuple
 
 from dotenv import load_dotenv
 from pydantic import ValidationError
@@ -28,6 +29,7 @@ from schemas.advisor_inputs import AdvisorInput
 from schemas.advisor_output import OutputAdvisor
 from validators.advisor_output_checks import validate_output_contract
 from helpers.json_extractor import try_extract_json
+from helpers.snapshot_selector import select_profile_snapshot, load_snapshot_from_file
 
 # Inicialização do AgentOps para monitoramento de custos
 import agentops
@@ -140,8 +142,19 @@ def _print_pretty(output: OutputAdvisor) -> None:
 def main(argv: Optional[list[str]] = None) -> int:
     args = _parse_args(argv)
 
+    # Carrega snapshot se fornecido, senão permite seleção interativa
+    snapshot_data = None
+    if args.snapshot:
+        snapshot_data = load_snapshot_from_file(args.snapshot)
+        if snapshot_data is None:
+            return 1
+    else:
+        # Se não foi fornecido snapshot via argumento, permite seleção interativa
+        snapshot_data, snapshot_label = select_profile_snapshot()
+        print(f"\nSnapshot selecionado: {snapshot_label}")
+
     # Validação básica
-    if not args.snapshot and not args.interesse:
+    if not snapshot_data and not args.interesse:
         print("[ERRO] Pelo menos '--snapshot' ou '--interesse' deve ser fornecido", file=sys.stderr)
         return 2
 
@@ -165,13 +178,19 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     try:
         # Executa o Crew com os inputs validados
-        result = advisor_crew.kickoff(inputs={
+        crew_inputs = {
             "snapshot_file": user_input.snapshot_file,
             "interesse": user_input.interesse,
             "preferencia": user_input.preferencia,
             "foco_especifico": user_input.foco_especifico,
             "prioridade_urgencia": user_input.prioridade_urgencia
-        })
+        }
+        
+        # Se temos dados de snapshot selecionados interativamente, adiciona ao input
+        if snapshot_data and not args.snapshot:
+            crew_inputs["snapshot_data"] = snapshot_data
+            
+        result = advisor_crew.kickoff(inputs=crew_inputs)
 
         raw_text = result if isinstance(result, str) else str(result)
 
