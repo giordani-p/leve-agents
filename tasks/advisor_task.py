@@ -20,11 +20,13 @@ from agents.advisor_agent import advisor_agent
 advisor_task = Task(
     name="Planejamento Estratégico de Carreira",
     description=(
-        "Analise o perfil completo do jovem e crie um plano estratégico de carreira de longo prazo. "
-        "Se um snapshot for fornecido em {snapshot_file}, leia o arquivo JSON e use todas as informações disponíveis: "
-        "situação acadêmica, objetivos, habilidades, barreiras, contexto socioeconômico, perfil DISC, "
-        "talentos CliftonStrengths e aspirações profissionais. Se apenas interesse/preferência for fornecido, "
-        "adapte para essas informações. Considere o foco específico ({foco_especifico}) e prioridade ({prioridade_urgencia}). "
+        "Crie um plano estratégico de carreira de longo prazo baseado nas informações fornecidas. "
+        "IMPORTANTE: Use APENAS as informações explicitamente fornecidas. "
+        "Se um snapshot for fornecido em {snapshot_file} ou dados de snapshot em {snapshot_data}, use essas informações específicas. "
+        "Se apenas interesse/preferência for fornecido, trabalhe APENAS com essas informações. "
+        "Se nenhum snapshot estiver disponível, trabalhe APENAS com as informações fornecidas (interesse, preferência, foco). "
+        "NÃO invente ou assuma informações que não foram fornecidas. "
+        "Considere o foco específico ({foco_especifico}) e prioridade ({prioridade_urgencia}). "
         "Crie um plano estratégico que inclua: "
         "- Análise do perfil e identificação de direções de carreira "
         "- Roadmap de desenvolvimento com marcos e prazos "
@@ -40,6 +42,8 @@ advisor_task = Task(
     ),
     expected_output=(
         "Retorne APENAS um JSON válido (sem texto antes/depois). "
+        "IMPORTANTE: Use apenas as informações fornecidas. Se não houver snapshot, trabalhe apenas com interesse/preferência fornecidos. "
+        "NÃO invente informações de perfil, habilidades, barreiras ou contexto que não foram explicitamente fornecidos. "
         "Regras: (1) Máximo 5 itens em 'options'; (2) 'rank' único ∈ {1,2,3,4,5}; "
         "(3) 'type' deve ser um dos tipos de recomendação válidos; (4) 'compatibility_score' ∈ {1,2,3,4,5,6,7,8,9,10}; "
         "(5) se um dado não existir, use 'não informado' ou null (não a string 'null'); (6) 'sources[*].accessed_at' no formato YYYY-MM-DD; "

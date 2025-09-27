@@ -7,6 +7,7 @@ Executa validação completa dos resultados e suporta saída em JSON.
 Exemplos:
   python -m cli.main_advisor -i "programação" -p "online"
   python -m cli.main_advisor -i "medicina" -p "presencial, SP" --json
+  python -m cli.main_advisor -i "programação" --no-snapshot
 """
 from __future__ import annotations
 
@@ -68,6 +69,11 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
         "--json",
         action="store_true",
         help="Imprime o objeto OutputAdvisor completo em JSON.",
+    )
+    parser.add_argument(
+        "--no-snapshot",
+        action="store_true",
+        help="Pula a seleção de snapshot e executa sem perfil.",
     )
     return parser.parse_args(argv)
 
@@ -148,14 +154,26 @@ def main(argv: Optional[list[str]] = None) -> int:
         snapshot_data = load_snapshot_from_file(args.snapshot)
         if snapshot_data is None:
             return 1
+    elif args.no_snapshot:
+        # Usuário explicitamente escolheu pular o snapshot
+        print("Executando sem snapshot de perfil...")
+        snapshot_data = None
     else:
         # Se não foi fornecido snapshot via argumento, permite seleção interativa
-        snapshot_data, snapshot_label = select_profile_snapshot()
-        print(f"\nSnapshot selecionado: {snapshot_label}")
+        try:
+            snapshot_data, snapshot_label = select_profile_snapshot()
+            print(f"\nSnapshot selecionado: {snapshot_label}")
+        except KeyboardInterrupt:
+            print("\nOperação cancelada pelo usuário.")
+            return 1
+        except Exception as e:
+            print(f"Erro ao selecionar snapshot: {e}")
+            print("Continuando sem snapshot...")
+            snapshot_data = None
 
     # Validação básica
     if not snapshot_data and not args.interesse:
-        print("[ERRO] Pelo menos '--snapshot' ou '--interesse' deve ser fornecido", file=sys.stderr)
+        print("[ERRO] Pelo menos '--snapshot', '--no-snapshot' ou '--interesse' deve ser fornecido", file=sys.stderr)
         return 2
 
     # Valida os dados usando o schema Pydantic
@@ -183,12 +201,9 @@ def main(argv: Optional[list[str]] = None) -> int:
             "interesse": user_input.interesse,
             "preferencia": user_input.preferencia,
             "foco_especifico": user_input.foco_especifico,
-            "prioridade_urgencia": user_input.prioridade_urgencia
+            "prioridade_urgencia": user_input.prioridade_urgencia,
+            "snapshot_data": snapshot_data
         }
-        
-        # Se temos dados de snapshot selecionados interativamente, adiciona ao input
-        if snapshot_data and not args.snapshot:
-            crew_inputs["snapshot_data"] = snapshot_data
             
         result = advisor_crew.kickoff(inputs=crew_inputs)
 

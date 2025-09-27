@@ -8,6 +8,7 @@ Exemplos:
   python -m cli.main_career -q "Como montar um currículo sem experiência?"
   python -m cli.main_career -q "Quais áreas posso trabalhar?" --snapshot-path files/snapshots/ana_001.json
   python -m cli.main_career -q "Como me preparar para entrevistas?" --json
+  python -m cli.main_career -q "Como montar um currículo?" --no-snapshot
 """
 from __future__ import annotations
 
@@ -58,6 +59,11 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
         action="store_true",
         help="Imprime o objeto CareerOutput completo em JSON.",
     )
+    parser.add_argument(
+        "--no-snapshot",
+        action="store_true",
+        help="Pula a seleção de snapshot e executa sem perfil.",
+    )
     return parser.parse_args(argv)
 
 
@@ -94,10 +100,23 @@ def main(argv: Optional[list[str]] = None) -> int:
         profile_snapshot = load_snapshot_from_file(args.snapshot_path)
         if profile_snapshot is None:
             return 1
+    elif args.no_snapshot:
+        # Usuário explicitamente escolheu pular o snapshot
+        print("Executando sem snapshot de perfil...")
+        profile_snapshot = None
     else:
         # Se não foi fornecido snapshot via argumento, permite seleção interativa
-        profile_snapshot, snapshot_label = select_profile_snapshot()
-        print(f"\nSnapshot selecionado: {snapshot_label}")
+        # Mas permite pular sem erro
+        try:
+            profile_snapshot, snapshot_label = select_profile_snapshot()
+            print(f"\nSnapshot selecionado: {snapshot_label}")
+        except KeyboardInterrupt:
+            print("\nOperação cancelada pelo usuário.")
+            return 1
+        except Exception as e:
+            print(f"Erro ao selecionar snapshot: {e}")
+            print("Continuando sem snapshot...")
+            profile_snapshot = None
 
     # Valida o input do usuário
     try:
@@ -117,10 +136,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     try:
         # Executa o Crew com os inputs validados
         kickoff_inputs = {
-            "question": user_input.question
+            "question": user_input.question,
+            "profile_snapshot": user_input.profile_snapshot
         }
-        if user_input.profile_snapshot is not None:
-            kickoff_inputs["profile_snapshot"] = user_input.profile_snapshot
 
         result = career_coach_crew.kickoff(inputs=kickoff_inputs)
         raw_text = result if isinstance(result, str) else str(result)

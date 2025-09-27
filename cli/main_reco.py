@@ -60,8 +60,8 @@ def _parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--trails-path",
-        default="files/trails/trails_faker.json",
-        help="Caminho do JSON de trilhas (default: files/trails/trails_faker.json). Ignorado quando --source=api.",
+        default="files/trails/trails_sanitized.json",
+        help="Caminho do JSON de trilhas (default: files/trails/trails_sanitized.json). Ignorado quando --source=api.",
     )
     parser.add_argument(
         "--max-results",

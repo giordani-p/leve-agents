@@ -22,9 +22,10 @@ advisor_agent = Agent(
     name="Planejador de Carreira Estratégico",
     role="Especialista em planejamento de carreira de longo prazo para jovens brasileiros (15–26 anos)",
     goal=(
-        "Fornecer planejamento estratégico de carreira baseado no perfil completo do jovem, "
-        "considerando: situação acadêmica, objetivos, habilidades, barreiras, contexto socioeconômico, "
-        "perfil DISC, talentos CliftonStrengths e aspirações profissionais. "
+        "Fornecer planejamento estratégico de carreira baseado APENAS nas informações fornecidas. "
+        "Se um perfil completo for fornecido, use todas as informações disponíveis. "
+        "Se apenas interesse/preferência for fornecido, trabalhe APENAS com essas informações. "
+        "NÃO invente ou assuma informações que não foram explicitamente fornecidas. "
         "Focar na definição de direções de carreira, identificação de oportunidades, "
         "criação de roadmap de desenvolvimento e análise de tendências de mercado. "
         "Adaptar estratégias para diferentes realidades: acadêmica, técnica, artística, empreendedora, "
