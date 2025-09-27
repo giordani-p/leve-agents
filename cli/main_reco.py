@@ -151,9 +151,25 @@ def _print_pretty(output) -> None:
         print("\n✨ Sugestões para você")
         for i, s in enumerate(output.suggested_trails, start=1):
             title = getattr(s, "title", None) or getattr(s, "nome", None) or getattr(s, "slug", None) or f"Trilha #{i}"
+            public_id = getattr(s, "publicId", None)
+            description = getattr(s, "description", None)
             why = getattr(s, "why_match", "") or getattr(s, "motivo", "") or ""
             match_score = getattr(s, "match_score", None)
+            
             print(f"\n#{i} — {title}")
+            
+            # Exibe publicId se disponível
+            if public_id:
+                print(indent(f"ID: {public_id}", "  "))
+            
+            # Exibe description se disponível
+            if description and description.strip():
+                # Trunca description se for muito longa
+                desc_text = description.strip()
+                if len(desc_text) > 200:
+                    desc_text = desc_text[:197] + "..."
+                print(indent(f"Descrição: {desc_text}", "  "))
+            
             if why:
                 print(indent(f"por que indicar: {why}", "  "))
             if isinstance(match_score, (int, float)):

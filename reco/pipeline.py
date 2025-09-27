@@ -151,7 +151,7 @@ def _map_reasons(
 # -----------------------------
 def run(
     user_input: TrailInput,
-    snapshot_path: str,
+    snapshot_path: Optional[str],
     trails_path: str,
     cfg: Optional[RecoConfig] = None,
 ) -> TrailOutput:

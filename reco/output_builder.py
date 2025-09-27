@@ -144,6 +144,7 @@ def build_output(
                 publicId=cand.publicId,  # mantém tipo do schema
                 slug=_safe_text(cand.slug, fallback=""),
                 title=_safe_text(cand.title, fallback="Trilha"),
+                description=_safe_text(cand.description, fallback=None),
                 why_match=reason,
                 match_score=_clamp01(float(sc.match_score)),
             )

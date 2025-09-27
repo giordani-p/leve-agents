@@ -57140,5 +57140,67 @@
         ]
       }
     ]
+  },
+  {
+    "publicId": "4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c2022",
+    "slug": "futebol-profissional",
+    "title": "Futebol Profissional",
+    "subtitle": "Do sonho à realidade: como se tornar um jogador profissional",
+    "description": "Trilha completa para quem quer se tornar jogador de futebol profissional. Inclui preparação física, técnica, tática, mental e estratégias para ser descoberto por clubes. Desenvolvida por ex-jogadores e preparadores físicos com experiência em categorias de base e profissionais.",
+    "difficulty": "Beginner",
+    "tags": [
+      "Esporte",
+      "Futebol",
+      "Carreira Esportiva",
+      "Preparação Física",
+      "Técnica",
+      "Mental"
+    ],
+    "topics": [
+      "Futebol",
+      "Esporte",
+      "Carreira",
+      "Preparação Física",
+      "Técnica",
+      "Tática",
+      "Mental"
+    ],
+    "area": "Esporte",
+    "status": "Published",
+    "combined_text": "Futebol Profissional | Do sonho à realidade: como se tornar um jogador profissional | Trilha completa para quem quer se tornar jogador de futebol profissional. Inclui preparação física, técnica, tática, mental e estratégias para ser descoberto por clubes. Desenvolvida por ex-jogadores e preparadores físicos com experiência em categorias de base e profissionais. | Esporte, Futebol, Carreira Esportiva, Preparação Física, Técnica, Mental | Futebol, Esporte, Carreira, Preparação Física, Técnica, Tática, Mental",
+    "Modules": [
+      {
+        "publicId": "futebol-mod-001-1234-5678-9abc-def012345678",
+        "title": "Fundamentos do Futebol",
+        "order": 1,
+        "contentStatus": "Published",
+        "Lessons": [
+          {
+            "publicId": "futebol-lesson-001-1234-5678-9abc-def012345678",
+            "title": "Como começar no futebol",
+            "order": 1,
+            "lessonKind": "reading",
+            "lessonStatus": "Published",
+            "lockReason": null,
+            "contentStatus": "Published",
+            "data": {
+              "conteudo": "Primeiros passos para se tornar um jogador de futebol profissional. Como escolher a posição ideal, onde treinar e como se destacar."
+            }
+          },
+          {
+            "publicId": "futebol-lesson-002-1234-5678-9abc-def012345678",
+            "title": "Preparação física para futebol",
+            "order": 2,
+            "lessonKind": "reading",
+            "lessonStatus": "Published",
+            "lockReason": null,
+            "contentStatus": "Published",
+            "data": {
+              "conteudo": "Exercícios específicos para jogadores de futebol. Resistência, velocidade, agilidade e força necessárias para o alto rendimento."
+            }
+          }
+        ]
+      }
+    ]
   }
 ]

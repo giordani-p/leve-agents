@@ -27,6 +27,11 @@ class SuggestedTrail(BaseModel):
         max_length=140,
         description="Título da trilha."
     )
+    description: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description="Descrição da trilha (opcional)."
+    )
     why_match: str = Field(
         ...,
         min_length=5,

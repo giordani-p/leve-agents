@@ -85,3 +85,10 @@ yarn.lock
 # Arquivos temporários específicos do projeto
 *.tmp
 *.temp
+
+# Dependências extras (não versionadas por padrão)
+requirements-full.txt
+requirements-optional.txt
+requirements-dev.txt
+REQUIREMENTS.md
+verify-dependencies.py

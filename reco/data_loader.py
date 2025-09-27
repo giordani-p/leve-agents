@@ -30,11 +30,15 @@ def _read_json(path: str | Path) -> Any:
         raise ValueError(f"JSON inválido em {p}: {e}") from e
 
 
-def load_snapshot(snapshot_path: str | Path) -> Dict[str, Any]:
+def load_snapshot(snapshot_path: str | Path | None) -> Dict[str, Any]:
     """
     Lê e retorna o snapshot do perfil.
     Espera um objeto JSON (dict).
+    Se snapshot_path for None, retorna um dicionário vazio.
     """
+    if snapshot_path is None:
+        return {}
+    
     data = _read_json(snapshot_path)
     if not isinstance(data, dict):
         raise ValueError(f"O snapshot deve ser um objeto JSON (dict). Arquivo: {snapshot_path}")
